@@ -156,11 +156,11 @@ function App() {
         {/* SECTION PARCOURS (à GAUCHE) */}
         <section 
           ref={parcoursContainerRef}
-          className="w-1/2 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-[#000814]/40 backdrop-blur-[2px]"
+          className="w-1/2 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-transparent"
         >
           <button 
             onClick={() => handleSectionChange('home')}
-            className="fixed top-8 right-8 z-50 flex items-center gap-2 text-[#d0bcff] uppercase tracking-widest text-sm hover:translate-x-[4px] transition-transform"
+            className="absolute top-8 right-8 z-50 flex items-center gap-2 text-[#d0bcff] uppercase tracking-widest text-sm hover:translate-x-[4px] transition-transform"
           >
             Retour →
           </button>

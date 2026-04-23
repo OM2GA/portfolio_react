@@ -109,10 +109,10 @@ export const StarryBackground = ({ gravity, center, isTraveling, themeColor = "#
       {/* Fond atmosphérique dynamique */}
       <motion.div 
         animate={{ 
-          backgroundColor: `${themeColor}10`, // Teinte très légère sur tout le fond
+          backgroundColor: themeColor,
         }}
         transition={{ duration: 2 }}
-        className="absolute inset-0"
+        className="absolute inset-0 opacity-[0.08]"
       />
 
       <motion.div 
