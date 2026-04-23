@@ -55,6 +55,7 @@ function App() {
   const [isTraveling, setIsTraveling] = useState(false);
 
   const [activeThemeColor, setActiveThemeColor] = useState('#d0bcff');
+  const [currentIndex, setCurrentIndex] = useState(0);
   const parcoursContainerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -62,6 +63,7 @@ function App() {
       if (parcoursContainerRef.current) {
         const scrollTop = parcoursContainerRef.current.scrollTop;
         const index = Math.round(scrollTop / window.innerHeight);
+        setCurrentIndex(index);
         if (timelineData[index]) {
           setActiveThemeColor(timelineData[index].color);
         }
@@ -133,6 +135,13 @@ function App() {
     return null;
   };
 
+  const hexToRgba = (hex: string, opacity: number) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  };
+
   return (
     <main className="relative h-screen w-full text-white overflow-hidden">
       <StarryBackground 
@@ -158,12 +167,70 @@ function App() {
           ref={parcoursContainerRef}
           className="w-1/2 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-transparent"
         >
-          <button 
-            onClick={() => handleSectionChange('home')}
-            className="absolute top-8 right-8 z-50 flex items-center gap-2 text-[#d0bcff] uppercase tracking-widest text-sm hover:translate-x-[4px] transition-transform"
-          >
-            Retour →
-          </button>
+          {/* Éléments fixes du parcours */}
+          <div className="fixed inset-0 pointer-events-none z-50 w-1/2">
+            <button 
+              onClick={() => handleSectionChange('home')}
+              className="absolute top-8 right-8 pointer-events-auto flex items-center gap-2 uppercase tracking-widest text-sm hover:translate-x-[4px] transition-all"
+              style={{ color: activeThemeColor }}
+            >
+              Retour →
+            </button>
+
+            {/* Navigation Boutons (Fixe) */}
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-auto">
+              {currentIndex > 0 && (
+                <motion.button 
+                  onClick={(e) => handleInnerSectionChange(e, currentIndex - 1)}
+                  style={{ 
+                    borderColor: hexToRgba(activeThemeColor, 0.4),
+                    backgroundColor: hexToRgba(activeThemeColor, 0.1),
+                    color: activeThemeColor
+                  }}
+                  whileHover={{ 
+                    scale: 1.1, 
+                    y: -2,
+                    backgroundColor: hexToRgba(activeThemeColor, 0.2),
+                    boxShadow: `0 0 20px ${hexToRgba(activeThemeColor, 0.4)}`
+                  }}
+                  whileTap={{ scale: 0.9, y: 0 }}
+                  className="flex items-center justify-center w-12 h-12 rounded-full border backdrop-blur-md shadow-lg transition-all duration-300 group"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="group-hover:drop-shadow-[0_0_8px_currentColor]">
+                    <path d="M18 15L12 9L6 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </motion.button>
+              )}
+              
+              <div 
+                className="w-px h-6 bg-gradient-to-b from-transparent to-transparent" 
+                style={{ backgroundImage: `linear-gradient(to bottom, transparent, ${hexToRgba(activeThemeColor, 0.4)}, transparent)` }}
+              />
+              
+              {currentIndex < timelineData.length - 1 && (
+                <motion.button 
+                  onClick={(e) => handleInnerSectionChange(e, currentIndex + 1)}
+                  style={{ 
+                    borderColor: hexToRgba(activeThemeColor, 0.4),
+                    backgroundColor: hexToRgba(activeThemeColor, 0.1),
+                    color: activeThemeColor
+                  }}
+                  whileHover={{ 
+                    scale: 1.1, 
+                    y: 2,
+                    backgroundColor: hexToRgba(activeThemeColor, 0.2),
+                    boxShadow: `0 0 20px ${hexToRgba(activeThemeColor, 0.4)}`
+                  }}
+                  whileTap={{ scale: 0.9, y: 0 }}
+                  className="flex items-center justify-center w-12 h-12 rounded-full border backdrop-blur-md shadow-lg transition-all duration-300 group"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="group-hover:drop-shadow-[0_0_8px_currentColor]">
+                    <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </motion.button>
+              )}
+            </div>
+          </div>
 
           {timelineData.map((step, index) => (
             <div key={index} className="h-screen w-full flex items-center justify-center p-12 snap-start relative">
@@ -198,47 +265,6 @@ function App() {
                   <h4 className="text-xl md:text-2xl font-light text-white/90">{step.title}</h4>
                   <p className={`text-slate-400 leading-relaxed max-w-xl ml-auto mr-auto text-left ${index % 2 === 0 ? 'md:ml-0' : 'md:mr-0'}`}>{step.description}</p>
                 </motion.div>
-              </div>
-
-              {/* Navigation Boutons (Espace) */}
-              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-50">
-                {index > 0 && (
-                  <motion.button 
-                    onClick={(e) => handleInnerSectionChange(e, index - 1)}
-                    whileHover={{ 
-                      scale: 1.1, 
-                      y: -2,
-                      backgroundColor: "rgba(208, 188, 255, 0.2)",
-                      boxShadow: "0 0 20px rgba(208, 188, 255, 0.4)"
-                    }}
-                    whileTap={{ scale: 0.9, y: 0 }}
-                    className="flex items-center justify-center w-12 h-12 rounded-full border border-[#d0bcff]/40 bg-[#d0bcff]/10 backdrop-blur-md shadow-lg transition-all duration-300 group"
-                  >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#d0bcff] group-hover:drop-shadow-[0_0_8px_#d0bcff]">
-                      <path d="M18 15L12 9L6 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </motion.button>
-                )}
-                
-                <div className="w-px h-6 bg-gradient-to-b from-transparent via-[#d0bcff]/40 to-transparent" />
-                
-                {index < timelineData.length - 1 && (
-                  <motion.button 
-                    onClick={(e) => handleInnerSectionChange(e, index + 1)}
-                    whileHover={{ 
-                      scale: 1.1, 
-                      y: 2,
-                      backgroundColor: "rgba(208, 188, 255, 0.2)",
-                      boxShadow: "0 0 20px rgba(208, 188, 255, 0.4)"
-                    }}
-                    whileTap={{ scale: 0.9, y: 0 }}
-                    className="flex items-center justify-center w-12 h-12 rounded-full border border-[#d0bcff]/40 bg-[#d0bcff]/10 backdrop-blur-md shadow-lg transition-all duration-300 group"
-                  >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#d0bcff] group-hover:drop-shadow-[0_0_8px_#d0bcff]">
-                      <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </motion.button>
-                )}
               </div>
             </div>
           ))}
