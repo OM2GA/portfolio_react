@@ -40,12 +40,13 @@ export const StarryBackground = ({ gravity, center, isTraveling }: StarryBackgro
 
   const getTargetPosition = (star: Star) => {
     if (isTraveling) {
-      // Pendant le voyage, les étoiles s'étirent vers la droite (direction opposée au mouvement)
+      // Pendant le voyage, on décale légèrement les étoiles et on les étire
+      // sans les faire sortir de l'écran
       return { 
-        left: `${star.x + 100}%`, 
+        left: `${star.x + 15}%`, 
         top: `${star.y}%`,
-        width: star.size * 20, // Étirement
-        opacity: 0.8
+        width: star.size * 12, // Étirement warp drive
+        opacity: 0.7
       };
     }
     if (!gravity || !center || star.id >= 60) return { left: `${star.x}%`, top: `${star.y}%`, width: star.size, opacity: 1 };
@@ -106,8 +107,8 @@ export const StarryBackground = ({ gravity, center, isTraveling }: StarryBackgro
     <div className="fixed inset-0 z-[-1] overflow-hidden bg-[#000814]">
       <motion.div 
         animate={{ 
-          x: isTraveling ? "-20%" : "0%",
-          scale: isTraveling ? 1.5 : 1
+          x: isTraveling ? "-10%" : "0%", // Parallaxe plus doux
+          scale: isTraveling ? 1.2 : 1
         }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
         className="absolute inset-0 opacity-40"
@@ -122,30 +123,20 @@ export const StarryBackground = ({ gravity, center, isTraveling }: StarryBackgro
           <motion.div
             key={star.id}
             className="absolute rounded-full bg-white"
-            initial={{
-              left: `${star.x}%`,
-              top: `${star.y}%`,
-              opacity: 0
-            }}
+            initial={{ opacity: 0 }}
             animate={{
               left: targetPos.left,
               top: targetPos.top,
               width: targetPos.width,
-              opacity: isTraveling ? targetPos.opacity : [0.4, 1, 0.4],
+              opacity: isTraveling ? 0.6 : [0.4, 1, 0.4],
             }}
             transition={{
-              left: isTraveling 
-                ? { duration: 0.8, ease: "easeIn" }
-                : { type: "spring", stiffness: 100, damping: 15 },
-              top: isTraveling 
-                ? { duration: 0.8, ease: "easeIn" }
-                : { type: "spring", stiffness: 100, damping: 15 },
-              width: { duration: 0.5 },
-              opacity: {
-                duration: star.duration,
-                repeat: isTraveling ? 0 : Infinity,
-                delay: star.delay,
-              }
+              left: { duration: 1.2, ease: "easeInOut" },
+              top: { duration: 1.2, ease: "easeInOut" },
+              width: { duration: 0.8, ease: "easeInOut" },
+              opacity: isTraveling 
+                ? { duration: 0.5 } 
+                : { duration: star.duration, repeat: Infinity, delay: star.delay }
             }}
             style={{
               height: star.size,
