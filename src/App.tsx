@@ -15,12 +15,12 @@ interface TimelineStep {
 
 const timelineData: TimelineStep[] = [
   {
-    title: "Stage Développement Web",
-    company: "BNP Paribas",
-    date: "07/04 AU 01/06 2026",
-    description: "Chargé du développement d'assets front-end en environnement de test. Récréation de la structure et du design de la page d'accueil BNP Paribas sous Angular, Tailwind et Bootstrap.",
-    color: "#00a082", // Vert BNP
-    planetColor: "radial-gradient(circle at 30% 30%, #00a082, #004a3d)"
+    title: "Bac Général NSI",
+    company: "Lycée Jules Ferry",
+    date: "2024",
+    description: "Spécialité Mathématiques et Numérique et Sciences Informatiques.",
+    color: "#3b82f6", // Bleu
+    planetColor: "radial-gradient(circle at 30% 30%, #3b82f6, #1d4ed8)"
   },
   {
     title: "BUT MMI (2ème année)",
@@ -39,12 +39,12 @@ const timelineData: TimelineStep[] = [
     planetColor: "radial-gradient(circle at 30% 30%, #ff0000, #4a0000)"
   },
   {
-    title: "Bac Général NSI",
-    company: "Lycée Jules Ferry",
-    date: "2024",
-    description: "Spécialité Mathématiques et Numérique et Sciences Informatiques.",
-    color: "#3b82f6", // Bleu
-    planetColor: "radial-gradient(circle at 30% 30%, #3b82f6, #1d4ed8)"
+    title: "Stage Développement Web",
+    company: "BNP Paribas",
+    date: "07/04 AU 01/06 2026",
+    description: "Chargé du développement d'assets front-end en environnement de test. Récréation de la structure et du design de la page d'accueil BNP Paribas sous Angular, Tailwind et Bootstrap.",
+    color: "#00a082", // Vert BNP
+    planetColor: "radial-gradient(circle at 30% 30%, #00a082, #004a3d)"
   }
 ];
 
@@ -73,6 +73,36 @@ function App() {
     }, 50);
   };
 
+  const handleInnerSectionChange = (e: React.MouseEvent, targetIndex: number) => {
+    const container = e.currentTarget.closest('section');
+    if (!container) return;
+
+    const start = container.scrollTop;
+    const target = targetIndex * window.innerHeight;
+    const change = target - start;
+    const duration = 800; // 0.8 seconde pour mieux voir l'effet
+    let startTime: number | null = null;
+
+    const animateScroll = (currentTime: number) => {
+      if (startTime === null) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      
+      // easeInOutQuint : accélération et décélération très fluides
+      const ease = progress < 0.5 
+        ? 16 * Math.pow(progress, 5) 
+        : 1 - Math.pow(-2 * progress + 2, 5) / 2;
+
+      container.scrollTop = start + change * ease;
+
+      if (timeElapsed < duration) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+
+    requestAnimationFrame(animateScroll);
+  };
+
   const getGravity = (): GravityType => {
     if (isTraveling || currentSection === 'parcours') return null;
     if (hoveredButton === 'parcours') return 'left';
@@ -90,14 +120,14 @@ function App() {
         initial={{ x: "-50%" }}
         animate={{ 
           x: currentSection === 'home' ? "-50%" : "0%",
-          scale: isTraveling ? 0.95 : 1, // Moins de dézoom pour garder de la clarté
-          filter: isTraveling ? "blur(4px)" : "blur(0px)" // Flou divisé par 2
+          scale: isTraveling ? 0.95 : 1, 
+          filter: isTraveling ? "blur(4px)" : "blur(0px)" 
         }}
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
         className="flex h-full w-[200%]"
       >
         {/* SECTION PARCOURS (à GAUCHE) */}
-        <section className="w-1/2 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar snap-y snap-mandatory bg-[#000814]/40 backdrop-blur-[2px]">
+        <section className="w-1/2 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-[#000814]/40 backdrop-blur-[2px]">
           <button 
             onClick={() => handleSectionChange('home')}
             className="fixed top-8 right-8 z-50 flex items-center gap-2 text-[#d0bcff] uppercase tracking-widest text-sm hover:translate-x-[4px] transition-transform"
@@ -136,16 +166,50 @@ function App() {
                   <span className="text-sm font-bold tracking-widest uppercase opacity-60" style={{ color: step.color }}>{step.date}</span>
                   <h3 className="text-3xl md:text-5xl font-black uppercase leading-tight" style={{ color: step.color }}>{step.company}</h3>
                   <h4 className="text-xl md:text-2xl font-light text-white/90">{step.title}</h4>
-                  <p className="text-slate-400 leading-relaxed max-w-xl ml-auto mr-auto md:ml-0 md:mr-0">{step.description}</p>
+                  <p className={`text-slate-400 leading-relaxed max-w-xl ml-auto mr-auto text-left ${index % 2 === 0 ? 'md:ml-0' : 'md:mr-0'}`}>{step.description}</p>
                 </motion.div>
               </div>
 
-              {index < timelineData.length - 1 && (
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-[#d0bcff]/40 uppercase tracking-[0.3em] text-[10px] flex flex-col items-center gap-2">
-                  <span>Scroll</span>
-                  <div className="w-px h-12 bg-gradient-to-b from-[#d0bcff]/50 to-transparent" />
-                </div>
-              )}
+              {/* Navigation Boutons (Espace) */}
+              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-50">
+                {index > 0 && (
+                  <motion.button 
+                    onClick={(e) => handleInnerSectionChange(e, index - 1)}
+                    whileHover={{ 
+                      scale: 1.1, 
+                      y: -2,
+                      backgroundColor: "rgba(208, 188, 255, 0.2)",
+                      boxShadow: "0 0 20px rgba(208, 188, 255, 0.4)"
+                    }}
+                    whileTap={{ scale: 0.9, y: 0 }}
+                    className="flex items-center justify-center w-12 h-12 rounded-full border border-[#d0bcff]/40 bg-[#d0bcff]/10 backdrop-blur-md shadow-lg transition-all duration-300 group"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#d0bcff] group-hover:drop-shadow-[0_0_8px_#d0bcff]">
+                      <path d="M18 15L12 9L6 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </motion.button>
+                )}
+                
+                <div className="w-px h-6 bg-gradient-to-b from-transparent via-[#d0bcff]/40 to-transparent" />
+                
+                {index < timelineData.length - 1 && (
+                  <motion.button 
+                    onClick={(e) => handleInnerSectionChange(e, index + 1)}
+                    whileHover={{ 
+                      scale: 1.1, 
+                      y: 2,
+                      backgroundColor: "rgba(208, 188, 255, 0.2)",
+                      boxShadow: "0 0 20px rgba(208, 188, 255, 0.4)"
+                    }}
+                    whileTap={{ scale: 0.9, y: 0 }}
+                    className="flex items-center justify-center w-12 h-12 rounded-full border border-[#d0bcff]/40 bg-[#d0bcff]/10 backdrop-blur-md shadow-lg transition-all duration-300 group"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#d0bcff] group-hover:drop-shadow-[0_0_8px_#d0bcff]">
+                      <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </motion.button>
+                )}
+              </div>
             </div>
           ))}
         </section>
