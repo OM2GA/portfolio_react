@@ -131,8 +131,12 @@ export const StarryBackground = ({ gravity, center, isTraveling }: StarryBackgro
               opacity: isTraveling ? 0.6 : [0.4, 1, 0.4],
             }}
             transition={{
-              left: { duration: 1.2, ease: "easeInOut" },
-              top: { duration: 1.2, ease: "easeInOut" },
+              left: isTraveling 
+                ? { duration: 0.8, ease: "easeInOut" }
+                : { type: "spring", stiffness: 300, damping: 25 },
+              top: isTraveling 
+                ? { duration: 0.8, ease: "easeInOut" }
+                : { type: "spring", stiffness: 300, damping: 25 },
               width: { duration: 0.8, ease: "easeInOut" },
               opacity: isTraveling 
                 ? { duration: 0.5 } 
