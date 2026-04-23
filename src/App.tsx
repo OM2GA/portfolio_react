@@ -1,6 +1,6 @@
 import { StarryBackground } from "./components/StarryBackground"
 import { motion } from "motion/react"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 
 type GravityType = 'left' | 'down' | 'right' | null;
 
@@ -54,6 +54,27 @@ function App() {
   const [currentSection, setCurrentSection] = useState<'home' | 'parcours'>('home');
   const [isTraveling, setIsTraveling] = useState(false);
 
+  const [activeThemeColor, setActiveThemeColor] = useState('#d0bcff');
+  const parcoursContainerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (parcoursContainerRef.current) {
+        const scrollTop = parcoursContainerRef.current.scrollTop;
+        const index = Math.round(scrollTop / window.innerHeight);
+        if (timelineData[index]) {
+          setActiveThemeColor(timelineData[index].color);
+        }
+      }
+    };
+
+    const container = parcoursContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+    }
+    return () => container?.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>, label: string) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setButtonCenter({
@@ -77,6 +98,7 @@ function App() {
     const container = e.currentTarget.closest('section');
     if (!container) return;
 
+    setActiveThemeColor(timelineData[targetIndex].color);
     const start = container.scrollTop;
     const target = targetIndex * window.innerHeight;
     const change = target - start;
@@ -113,7 +135,12 @@ function App() {
 
   return (
     <main className="relative h-screen w-full text-white overflow-hidden">
-      <StarryBackground gravity={getGravity()} center={buttonCenter} isTraveling={isTraveling} />
+      <StarryBackground 
+        gravity={getGravity()} 
+        center={buttonCenter} 
+        isTraveling={isTraveling} 
+        themeColor={currentSection === 'home' ? '#4f378b' : activeThemeColor}
+      />
       
       {/* Container pour le scroll horizontal */}
       <motion.div 
@@ -127,7 +154,10 @@ function App() {
         className="flex h-full w-[200%]"
       >
         {/* SECTION PARCOURS (à GAUCHE) */}
-        <section className="w-1/2 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-[#000814]/40 backdrop-blur-[2px]">
+        <section 
+          ref={parcoursContainerRef}
+          className="w-1/2 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-[#000814]/40 backdrop-blur-[2px]"
+        >
           <button 
             onClick={() => handleSectionChange('home')}
             className="fixed top-8 right-8 z-50 flex items-center gap-2 text-[#d0bcff] uppercase tracking-widest text-sm hover:translate-x-[4px] transition-transform"

@@ -14,9 +14,10 @@ interface StarryBackgroundProps {
   gravity: 'left' | 'right' | 'down' | null;
   center?: { x: number; y: number } | null;
   isTraveling?: boolean;
+  themeColor?: string;
 }
 
-export const StarryBackground = ({ gravity, center, isTraveling }: StarryBackgroundProps) => {
+export const StarryBackground = ({ gravity, center, isTraveling, themeColor = "#4f378b" }: StarryBackgroundProps) => {
   const [stars, setStars] = useState<Star[]>([]);
 
   useEffect(() => {
@@ -105,16 +106,55 @@ export const StarryBackground = ({ gravity, center, isTraveling }: StarryBackgro
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden bg-[#000814]">
+      {/* Fond atmosphérique dynamique */}
       <motion.div 
         animate={{ 
-          x: isTraveling ? "-10%" : "0%", // Parallaxe plus doux
+          backgroundColor: `${themeColor}10`, // Teinte très légère sur tout le fond
+        }}
+        transition={{ duration: 2 }}
+        className="absolute inset-0"
+      />
+
+      <motion.div 
+        animate={{ 
+          x: isTraveling ? "-10%" : "0%",
           scale: isTraveling ? 1.2 : 1
         }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
-        className="absolute inset-0 opacity-40"
+        className="absolute inset-0"
       >
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#001f3f]/30 blur-[130px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#4f378b]/20 blur-[120px] rounded-full" />
+        {/* Nébuleuse 1 - Haut Gauche */}
+        <motion.div 
+          animate={{ 
+            backgroundColor: themeColor,
+            scale: [1, 1.2, 1],
+          }}
+          transition={{ 
+            backgroundColor: { duration: 2 },
+            scale: { duration: 10, repeat: Infinity, ease: "easeInOut" }
+          }}
+          className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] blur-[150px] rounded-full opacity-40" 
+        />
+        
+        {/* Nébuleuse 2 - Bas Droite */}
+        <motion.div 
+          animate={{ 
+            backgroundColor: themeColor,
+            scale: [1.2, 1, 1.2],
+          }}
+          transition={{ 
+            backgroundColor: { duration: 2 },
+            scale: { duration: 15, repeat: Infinity, ease: "easeInOut" }
+          }}
+          className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] blur-[150px] rounded-full opacity-30" 
+        />
+
+        {/* Halo Central de rappel du thème */}
+        <motion.div 
+          animate={{ backgroundColor: themeColor }}
+          transition={{ duration: 2 }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full blur-[180px] rounded-full opacity-10"
+        />
       </motion.div>
 
       {stars.map((star) => {
