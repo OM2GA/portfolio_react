@@ -65,10 +65,12 @@ function App() {
 
   const handleSectionChange = (section: 'home' | 'parcours') => {
     setIsTraveling(true);
+    // On change de section presque immédiatement
     setTimeout(() => {
       setCurrentSection(section);
-      setTimeout(() => setIsTraveling(false), 1500);
-    }, 100);
+      // Le flou commence à disparaître à mi-chemin du voyage (800ms)
+      setTimeout(() => setIsTraveling(false), 800);
+    }, 50);
   };
 
   const getGravity = (): GravityType => {
@@ -88,8 +90,8 @@ function App() {
         initial={{ x: "-50%" }}
         animate={{ 
           x: currentSection === 'home' ? "-50%" : "0%",
-          scale: isTraveling ? 0.8 : 1,
-          filter: isTraveling ? "blur(8px)" : "blur(0px)"
+          scale: isTraveling ? 0.95 : 1, // Moins de dézoom pour garder de la clarté
+          filter: isTraveling ? "blur(4px)" : "blur(0px)" // Flou divisé par 2
         }}
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
         className="flex h-full w-[200%]"
