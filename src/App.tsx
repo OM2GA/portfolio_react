@@ -348,7 +348,7 @@ function App() {
               <p className="text-lg md:text-xl text-slate-200 leading-relaxed max-w-2xl font-light">
                 Passionné par la création multimédia et l'innovation numérique, je souhaite mettre en œuvre mes compétences dans la conception et le développement de projets visuels et interactifs. Je suis prêt à relever les défis qui me permettront de progresser et d'acquérir une plus grande expérience pratique. Mon objectif est de m’impliquer à 100% dans des projets alliant créativité et technologie.
               </p>
-              <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <div className="flex flex-wrap justify-center gap-8 pt-8">
                 {["parcours", "expériences", "compétences"].map((label) => (
                   <motion.button
                     key={label}
@@ -363,9 +363,32 @@ function App() {
                       scale: hoveredButton === label ? 0.9 : 1,
                     }}
                     whileTap={{ scale: 0.95 }}
-                    className="relative flex items-center justify-center px-8 py-3 rounded-full border border-[#d0bcff]/30 backdrop-blur-sm text-sm md:text-base font-medium tracking-widest uppercase h-[50px] min-w-[160px] transition-colors hover:border-[#d0bcff]/60"
+                    className="relative flex items-center justify-center px-10 py-4 group transition-all duration-500 min-w-[200px] h-14"
                   >
-                    <span>{label}</span>
+                    {/* Fond géométrique avec clip-path */}
+                    <div 
+                      className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-[#d0bcff]/20 transition-all duration-500 group-hover:bg-[#d0bcff]/5 group-hover:border-[#d0bcff]/50"
+                      style={{ 
+                        clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" 
+                      }}
+                    />
+                    
+                    {/* Bordures décoratives (angles) */}
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#d0bcff]/40 transition-colors group-hover:border-[#d0bcff]" />
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#d0bcff]/40 transition-colors group-hover:border-[#d0bcff]" />
+                    
+                    {/* Lignes de scan HUD latérales */}
+                    <div className="absolute left-0 top-1/4 bottom-1/4 w-[1px] bg-gradient-to-b from-transparent via-[#d0bcff]/30 to-transparent" />
+                    <div className="absolute right-0 top-1/4 bottom-1/4 w-[1px] bg-gradient-to-b from-transparent via-[#d0bcff]/30 to-transparent" />
+                    
+                    {/* Petite décoration textuelle HUD */}
+                    <span className="absolute -top-2 left-6 text-[8px] font-black text-[#d0bcff]/40 tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity uppercase">
+                      Access_Node
+                    </span>
+
+                    <span className="relative z-10 text-[#d0bcff] font-bold tracking-[0.25em] text-sm md:text-base uppercase transition-all duration-300 group-hover:tracking-[0.35em]">
+                      {label}
+                    </span>
                   </motion.button>
                 ))}
               </div>
