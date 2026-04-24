@@ -11,7 +11,7 @@ interface TimelineStep {
   title: string;
   company: string;
   date: string;
-  description: string;
+  description: React.ReactNode;
   color: string;
   planetColor: string;
   logo?: string;
@@ -39,7 +39,18 @@ const timelineData: TimelineStep[] = [
     title: "Stage Assistant UX Designer",
     company: "Société Générale",
     date: "04/07 AU 01/08 2025",
-    description: "Conception d'un film explicatif pour une application interne. Analyse des besoins, adaptation du script, montage vidéo et respect des normes UX/UI.",
+    description: (
+      <div className="space-y-2">
+        <p>Rattaché à l'équipe UX/UI du centre de solutions Trésorerie & Risques Structurels, j'ai contribué à la conception d'un film explicatif pour présenter une fonctionnalité d'une application interne. Mes missions incluaient :</p>
+        <ul className="list-disc list-inside space-y-1 ml-2">
+          <li>L'analyse des besoins utilisateurs et l'appropriation du fonctionnement de l'application.</li>
+          <li>L'adaptation du script et des maquettes Figma pour le film.</li>
+          <li>Le montage vidéo et la finalisation du produit, en collaboration avec des équipes pluridisciplinaires (UX/UI, informatique, métiers financiers).</li>
+          <li>Le respect des bonnes pratiques de production et de confidentialité en milieu professionnel.</li>
+        </ul>
+        <p className="pt-2 italic text-sm opacity-80">Environnement : Figma, outils de montage vidéo, méthodologies UX/UI, travail en équipe pluridisciplinaire.</p>
+      </div>
+    ),
     color: "#ff0000", // Rouge SocGen
     planetColor: "radial-gradient(circle at 30% 30%, #ff0000, #4a0000)",
     logo: socgenLogo
@@ -48,7 +59,7 @@ const timelineData: TimelineStep[] = [
     title: "Stage Développement Web",
     company: "BNP Paribas",
     date: "07/04 AU 01/06 2026",
-    description: "Chargé du développement d'assets front-end en environnement de test. Récréation de la structure et du design de la page d'accueil BNP Paribas sous Angular, Tailwind et Bootstrap.",
+    description: "Chargé du développement d'assets front-end en environnement de test pour les squads BNPP et Hello Bank, j'ai recréé la structure et le design de la page d'accueil BNP Paribas. Cette intégration sous VS Code a mobilisé HTML, CSS et les frameworks Angular, Tailwind et Bootstrap, confirmant ma polyvalence technique sur les outils de référence du marché.",
     color: "#00a082", // Vert BNP
     planetColor: "radial-gradient(circle at 30% 30%, #00a082, #004a3d)",
     logo: bnpLogo
@@ -359,7 +370,7 @@ function App() {
                   <span className="text-sm font-bold tracking-widest uppercase opacity-60" style={{ color: step.color }}>{step.date}</span>
                   <h3 className="text-3xl md:text-5xl font-black uppercase leading-tight" style={{ color: step.color }}>{step.company}</h3>
                   <h4 className="text-xl md:text-2xl font-light text-white/90">{step.title}</h4>
-                  <p className={`text-slate-400 leading-relaxed max-w-xl ml-auto mr-auto text-left ${index % 2 === 0 ? 'md:ml-0' : 'md:mr-0'}`}>{step.description}</p>
+                  <div className={`text-slate-400 leading-relaxed max-w-xl ml-auto mr-auto text-left ${index % 2 === 0 ? 'md:ml-0' : 'md:mr-0'}`}>{step.description}</div>
                 </motion.div>
               </div>
             </div>
