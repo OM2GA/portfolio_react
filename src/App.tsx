@@ -147,6 +147,15 @@ function App() {
     return () => container?.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const scrollToIndex = (index: number) => {
+    if (!parcoursContainerRef.current || !timelineData[index]) return;
+    
+    parcoursContainerRef.current.scrollTo({
+      top: index * window.innerHeight,
+      behavior: 'smooth'
+    });
+  };
+
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>, label: string) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setButtonCenter({
@@ -162,36 +171,6 @@ function App() {
       setCurrentSection(section);
       setTimeout(() => setIsTraveling(false), 800);
     }, 50);
-  };
-
-  const handleInnerSectionChange = (e: React.MouseEvent, targetIndex: number) => {
-    const container = e.currentTarget.closest('section');
-    if (!container) return;
-
-    setActiveThemeColor(timelineData[targetIndex].color);
-    const start = container.scrollTop;
-    const target = targetIndex * window.innerHeight;
-    const change = target - start;
-    const duration = 800;
-    let startTime: number | null = null;
-
-    const animateScroll = (currentTime: number) => {
-      if (startTime === null) startTime = currentTime;
-      const timeElapsed = currentTime - startTime;
-      const progress = Math.min(timeElapsed / duration, 1);
-      
-      const ease = progress < 0.5 
-        ? 16 * Math.pow(progress, 5) 
-        : 1 - Math.pow(-2 * progress + 2, 5) / 2;
-
-      container.scrollTop = start + change * ease;
-
-      if (timeElapsed < duration) {
-        requestAnimationFrame(animateScroll);
-      }
-    };
-
-    requestAnimationFrame(animateScroll);
   };
 
   const getGravity = (): GravityType => {
@@ -235,7 +214,7 @@ function App() {
         {/* SECTION PARCOURS */}
         <section 
           ref={parcoursContainerRef}
-          className="w-1/3 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-transparent"
+          className="w-1/3 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-transparent snap-y snap-mandatory"
         >
           <div className="fixed inset-0 pointer-events-none z-50 w-full md:w-1/3">
             <motion.button 
@@ -266,10 +245,38 @@ function App() {
               </span>
             </motion.button>
 
+            {/* Pagination latérale */}
+            <div className="absolute left-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-6 pointer-events-auto z-50">
+              {timelineData.map((step, index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToIndex(index)}
+                  className="group relative flex items-center"
+                >
+                  <motion.div
+                    animate={{
+                      height: currentIndex === index ? 32 : 8,
+                      width: currentIndex === index ? 4 : 2,
+                      backgroundColor: currentIndex === index ? activeThemeColor : "rgba(255,255,255,0.2)",
+                      boxShadow: currentIndex === index ? `0 0 15px ${activeThemeColor}` : "none"
+                    }}
+                    className="rounded-full transition-all duration-300"
+                  />
+                  <div 
+                    className="absolute left-6 px-3 py-1 bg-black/50 backdrop-blur-md border border-white/10 rounded-sm opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 pointer-events-none whitespace-nowrap"
+                  >
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: activeThemeColor }}>
+                      {step.company}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-auto">
               {currentIndex > 0 && (
                 <motion.button 
-                  onClick={(e) => handleInnerSectionChange(e, currentIndex - 1)}
+                  onClick={() => scrollToIndex(currentIndex - 1)}
                   style={{ 
                     borderColor: hexToRgba(activeThemeColor, 0.4),
                     backgroundColor: hexToRgba(activeThemeColor, 0.1),
@@ -297,7 +304,7 @@ function App() {
               
               {currentIndex < timelineData.length - 1 && (
                 <motion.button 
-                  onClick={(e) => handleInnerSectionChange(e, currentIndex + 1)}
+                  onClick={() => scrollToIndex(currentIndex + 1)}
                   style={{ 
                     borderColor: hexToRgba(activeThemeColor, 0.4),
                     backgroundColor: hexToRgba(activeThemeColor, 0.1),
