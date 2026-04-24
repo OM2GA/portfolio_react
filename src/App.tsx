@@ -1,6 +1,9 @@
 import { StarryBackground } from "./components/StarryBackground"
 import { motion } from "motion/react"
 import { useState, useRef, useEffect } from "react"
+import eiffelLogo from "./assets/Logo_universite_gustave_eiffel.png"
+import socgenLogo from "./assets/logo-societe-generale.png"
+import bnpLogo from "./assets/bnp-paribas-logo.webp"
 
 type GravityType = 'left' | 'down' | 'right' | null;
 
@@ -11,6 +14,7 @@ interface TimelineStep {
   description: string;
   color: string;
   planetColor: string;
+  logo?: string;
 }
 
 const timelineData: TimelineStep[] = [
@@ -27,8 +31,9 @@ const timelineData: TimelineStep[] = [
     company: "Université Gustave Eiffel",
     date: "2024 - Maintenant",
     description: "Métiers du Multimédia et de l'Internet. Spécialisation en développement web et design interactif.",
-    color: "#d0bcff", // Votre mauve
-    planetColor: "radial-gradient(circle at 30% 30%, #d0bcff, #4f378b)"
+    color: "#2d2d7b",
+    planetColor: "radial-gradient(circle at 30% 30%, #ffffff, #ffffff)",
+    logo: eiffelLogo
   },
   {
     title: "Stage Assistant UX Designer",
@@ -36,7 +41,8 @@ const timelineData: TimelineStep[] = [
     date: "04/07 AU 01/08 2025",
     description: "Conception d'un film explicatif pour une application interne. Analyse des besoins, adaptation du script, montage vidéo et respect des normes UX/UI.",
     color: "#ff0000", // Rouge SocGen
-    planetColor: "radial-gradient(circle at 30% 30%, #ff0000, #4a0000)"
+    planetColor: "radial-gradient(circle at 30% 30%, #ff0000, #4a0000)",
+    logo: socgenLogo
   },
   {
     title: "Stage Développement Web",
@@ -44,7 +50,8 @@ const timelineData: TimelineStep[] = [
     date: "07/04 AU 01/06 2026",
     description: "Chargé du développement d'assets front-end en environnement de test. Récréation de la structure et du design de la page d'accueil BNP Paribas sous Angular, Tailwind et Bootstrap.",
     color: "#00a082", // Vert BNP
-    planetColor: "radial-gradient(circle at 30% 30%, #00a082, #004a3d)"
+    planetColor: "radial-gradient(circle at 30% 30%, #00a082, #004a3d)",
+    logo: bnpLogo
   }
 ];
 
@@ -237,7 +244,8 @@ function App() {
               <div className={`max-w-6xl w-full flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12`}>
                 
                 {/* Planète 3D-ish */}
-                <div className="relative w-64 h-64 flex-shrink-0">
+                <div className="relative w-64 h-64 flex-shrink-0 flex items-center justify-center">
+                  {/* Div qui tourne (La planète) */}
                   <motion.div 
                     initial={{ scale: 0.8, opacity: 0 }}
                     whileInView={{ scale: 1, opacity: 1 }}
@@ -247,11 +255,22 @@ function App() {
                       rotate: { duration: 20, repeat: Infinity, ease: "linear" }
                     }}
                     style={{ background: step.planetColor }}
-                    className="w-full h-full rounded-full shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden"
+                    className="absolute inset-0 rounded-full shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
                   >
                     <div className="absolute inset-0 shadow-[inset_-20px_-20px_50px_rgba(0,0,0,0.8)]" />
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent" />
                   </motion.div>
+
+                  {/* Logo fixe par-dessus */}
+                  {step.logo && (
+                    <div className="relative z-10 w-1/2 h-1/2 flex items-center justify-center pointer-events-none">
+                      <img 
+                        src={step.logo} 
+                        alt={step.company}
+                        className="max-w-full max-h-full object-contain opacity-90"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Contenu Texte */}
