@@ -199,7 +199,7 @@ function App() {
     if (isTraveling) return null;
     if (currentSection === 'home') {
       if (hoveredButton === 'parcours') return 'left';
-      if (hoveredButton === 'expériences') return 'down';
+      if (hoveredButton === 'projets') return 'down';
       if (hoveredButton === 'compétences') return 'right';
     } else if (hoveredButton === 'retour') {
       return currentSection === 'parcours' ? 'right' : 'left';
@@ -400,10 +400,10 @@ function App() {
               </div>
               <div className="h-px w-40 bg-gradient-to-r from-transparent via-[#d0bcff] to-transparent" />
               <p className="text-lg md:text-xl text-slate-200 leading-relaxed max-w-2xl font-light">
-                Passionné par la création multimédia et l'innovation numérique, je souhaite mettre en œuvre mes compétences dans la conception et le développement de projets visuels et interactifs. Je suis prêt à relever les défis qui me permettront de progresser et d'acquérir une plus grande expérience pratique. Mon objectif est de m’impliquer à 100% dans des projets alliant créativité et technologie.
+                Passionné par la création multimédia et l'innovation numérique, je souhaite mettre en œuvre mes compétences dans la conception et le développement de projets visuels et interactifs. Je suis prêt à relever les défis qui me permettront de progresser et de réaliser de nombreux projets. Mon objectif est de m’impliquer à 100% dans des projets alliant créativité et technologie.
               </p>
               <div className="flex flex-wrap justify-center gap-8 pt-8">
-                {["parcours", "expériences", "compétences"].map((label) => (
+                {["parcours", "projets", "compétences"].map((label) => (
                   <motion.button
                     key={label}
                     onClick={() => {
