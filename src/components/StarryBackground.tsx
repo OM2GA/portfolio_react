@@ -42,12 +42,10 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
 
   const getTargetPosition = (star: Star) => {
     if (isTraveling) {
-      // Pendant le voyage, on décale les étoiles selon la direction
-      const offset = travelDirection === 'left' ? 15 : -15;
       return { 
-        left: `${star.x + offset}%`, 
+        left: `${star.x}%`, 
         top: `${star.y}%`,
-        width: star.size * 12, // Étirement warp drive
+        width: star.size * 15,
         opacity: 0.7
       };
     }
@@ -107,15 +105,14 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden bg-[#000814]">
-      {/* Fond atmosphérique dynamique */}
+      {/* Fond atmosphérique dynamique - INCHANGÉ */}
       <motion.div 
-        animate={{ 
-          backgroundColor: themeColor,
-        }}
+        animate={{ backgroundColor: themeColor }}
         transition={{ duration: 2 }}
         className="absolute inset-0 opacity-[0.08]"
       />
 
+      {/* Nébuleuses et Halo - RÉTABLIS À L'ORIGINAL (fixes) */}
       <motion.div 
         animate={{ 
           x: isTraveling ? (travelDirection === 'left' ? "10%" : "-10%") : "0%",
@@ -124,33 +121,16 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
         transition={{ duration: 1.5, ease: "easeInOut" }}
         className="absolute inset-0"
       >
-        {/* Nébuleuse 1 - Haut Gauche */}
         <motion.div 
-          animate={{ 
-            backgroundColor: themeColor,
-            scale: [1, 1.2, 1],
-          }}
-          transition={{ 
-            backgroundColor: { duration: 2 },
-            scale: { duration: 10, repeat: Infinity, ease: "easeInOut" }
-          }}
+          animate={{ backgroundColor: themeColor, scale: [1, 1.2, 1] }}
+          transition={{ backgroundColor: { duration: 2 }, scale: { duration: 10, repeat: Infinity, ease: "easeInOut" } }}
           className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] blur-[150px] rounded-full opacity-40" 
         />
-        
-        {/* Nébuleuse 2 - Bas Droite */}
         <motion.div 
-          animate={{ 
-            backgroundColor: themeColor,
-            scale: [1.2, 1, 1.2],
-          }}
-          transition={{ 
-            backgroundColor: { duration: 2 },
-            scale: { duration: 15, repeat: Infinity, ease: "easeInOut" }
-          }}
+          animate={{ backgroundColor: themeColor, scale: [1.2, 1, 1.2] }}
+          transition={{ backgroundColor: { duration: 2 }, scale: { duration: 15, repeat: Infinity, ease: "easeInOut" } }}
           className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] blur-[150px] rounded-full opacity-30" 
         />
-
-        {/* Halo Central de rappel du thème */}
         <motion.div 
           animate={{ backgroundColor: themeColor }}
           transition={{ duration: 2 }}
@@ -158,38 +138,51 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
         />
       </motion.div>
 
-      {stars.map((star) => {
-        const targetPos = getTargetPosition(star);
-        return (
-          <motion.div
-            key={star.id}
-            className="absolute rounded-full bg-white"
-            initial={{ opacity: 0 }}
-            animate={{
-              left: targetPos.left,
-              top: targetPos.top,
-              width: targetPos.width,
-              opacity: isTraveling ? 0.6 : [0.4, 1, 0.4],
-            }}
-            transition={{
-              left: isTraveling 
-                ? { duration: 0.8, ease: "easeInOut" }
-                : { type: "spring", stiffness: 130, damping: 18 },
-              top: isTraveling 
-                ? { duration: 0.8, ease: "easeInOut" }
-                : { type: "spring", stiffness: 130, damping: 18 },
-              width: { duration: 0.8, ease: "easeInOut" },
-              opacity: isTraveling 
-                ? { duration: 0.5 } 
-                : { duration: star.duration, repeat: Infinity, delay: star.delay }
-            }}
-            style={{
-              height: star.size,
-              width: star.size,
-            }}
-          />
-        );
-      })}
+      {/* ÉTOILES UNIQUEMENT - Système de boucle infinie */}
+      <motion.div 
+        animate={{ 
+          x: isTraveling ? (travelDirection === 'left' ? ["0%", "-50%"] : ["0%", "50%"]) : "0%",
+        }}
+        transition={{ 
+          x: isTraveling ? { duration: 10, repeat: Infinity, ease: "linear" } : { duration: 1.5, ease: "easeInOut" },
+        }}
+        className="absolute top-0 bottom-0 left-0 w-[200%] h-full"
+        style={{ x: travelDirection === 'left' ? '0%' : '-50%' }}
+      >
+        {[0, 1].map((blockIndex) => (
+          <div 
+            key={blockIndex} 
+            className="absolute top-0 bottom-0 w-1/2" 
+            style={{ left: `${blockIndex * 50}%` }}
+          >
+            {stars.map((star) => {
+              const targetPos = getTargetPosition(star);
+              return (
+                <motion.div
+                  key={`${star.id}-${blockIndex}`}
+                  className="absolute rounded-full bg-white"
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    left: targetPos.left,
+                    top: targetPos.top,
+                    width: targetPos.width,
+                    opacity: isTraveling ? 0.6 : [0.4, 1, 0.4],
+                  }}
+                  transition={{
+                    left: isTraveling ? { duration: 0 } : { type: "spring", stiffness: 130, damping: 18 },
+                    top: isTraveling ? { duration: 0 } : { type: "spring", stiffness: 130, damping: 18 },
+                    width: { duration: 0.8, ease: "easeInOut" },
+                    opacity: isTraveling 
+                      ? { duration: 0.5 } 
+                      : { duration: star.duration, repeat: Infinity, delay: star.delay }
+                  }}
+                  style={{ height: star.size, width: star.size }}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </motion.div>
     </div>
   );
 };
