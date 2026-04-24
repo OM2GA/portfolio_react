@@ -195,10 +195,14 @@ function App() {
   };
 
   const getGravity = (): GravityType => {
-    if (isTraveling || currentSection !== 'home') return null;
-    if (hoveredButton === 'parcours') return 'left';
-    if (hoveredButton === 'expériences') return 'down';
-    if (hoveredButton === 'compétences') return 'right';
+    if (isTraveling) return null;
+    if (currentSection === 'home') {
+      if (hoveredButton === 'parcours') return 'left';
+      if (hoveredButton === 'expériences') return 'down';
+      if (hoveredButton === 'compétences') return 'right';
+    } else if (hoveredButton === 'retour') {
+      return currentSection === 'parcours' ? 'right' : 'left';
+    }
     return null;
   };
 
@@ -234,13 +238,33 @@ function App() {
           className="w-1/3 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-transparent"
         >
           <div className="fixed inset-0 pointer-events-none z-50 w-full md:w-1/3">
-            <button 
+            <motion.button 
               onClick={() => handleSectionChange('home')}
-              className="absolute top-8 right-8 pointer-events-auto flex items-center gap-2 uppercase tracking-widest text-sm hover:translate-x-[4px] transition-all"
-              style={{ color: activeThemeColor }}
+              onMouseEnter={(e) => handleMouseEnter(e, 'retour')}
+              onMouseLeave={() => { setHoveredButton(null); setButtonCenter(null); }}
+              animate={{ 
+                opacity: hoveredButton === 'retour' ? 0 : 1,
+                scale: hoveredButton === 'retour' ? 0.9 : 1,
+              }}
+              whileTap={{ scale: 0.95 }}
+              className="absolute top-8 right-8 pointer-events-auto flex items-center justify-center px-8 py-3 group transition-all duration-500 min-w-[160px] h-12 z-50"
             >
-              Retour →
-            </button>
+              <div 
+                className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-[#d0bcff]/20 transition-all duration-500 group-hover:bg-[#d0bcff]/5 group-hover:border-[#d0bcff]/50"
+                style={{ 
+                  clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)",
+                  borderColor: hexToRgba(activeThemeColor, 0.4)
+                }}
+              />
+              <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#d0bcff]/40 transition-colors group-hover:border-[#d0bcff]" style={{ borderColor: hexToRgba(activeThemeColor, 0.4) }} />
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#d0bcff]/40 transition-colors group-hover:border-[#d0bcff]" style={{ borderColor: hexToRgba(activeThemeColor, 0.4) }} />
+              <span className="absolute -top-2 left-4 text-[7px] font-black text-[#d0bcff]/40 tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity uppercase">
+                Return_Node
+              </span>
+              <span className="relative z-10 font-bold tracking-[0.2em] text-xs uppercase" style={{ color: activeThemeColor }}>
+                Retour →
+              </span>
+            </motion.button>
 
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-auto">
               {currentIndex > 0 && (
@@ -398,12 +422,32 @@ function App() {
 
         {/* SECTION COMPÉTENCES */}
         <section className="w-1/3 h-full flex items-center justify-center p-6 bg-transparent relative overflow-hidden">
-          <button 
+          <motion.button 
             onClick={() => handleSectionChange('home')}
-            className="absolute top-8 left-8 z-50 flex items-center gap-2 uppercase tracking-widest text-sm hover:-translate-x-[4px] transition-all text-[#d0bcff]"
+            onMouseEnter={(e) => handleMouseEnter(e, 'retour')}
+            onMouseLeave={() => { setHoveredButton(null); setButtonCenter(null); }}
+            animate={{ 
+              opacity: hoveredButton === 'retour' ? 0 : 1,
+              scale: hoveredButton === 'retour' ? 0.9 : 1,
+            }}
+            whileTap={{ scale: 0.95 }}
+            className="absolute top-8 left-8 pointer-events-auto flex items-center justify-center px-8 py-3 group transition-all duration-500 min-w-[160px] h-12 z-50"
           >
-            ← Retour
-          </button>
+            <div 
+              className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-[#d0bcff]/20 transition-all duration-500 group-hover:bg-[#d0bcff]/5 group-hover:border-[#d0bcff]/50"
+              style={{ 
+                clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)"
+              }}
+            />
+            <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#d0bcff]/40 transition-colors group-hover:border-[#d0bcff]" />
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#d0bcff]/40 transition-colors group-hover:border-[#d0bcff]" />
+            <span className="absolute -top-2 left-4 text-[7px] font-black text-[#d0bcff]/40 tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity uppercase">
+              Return_Node
+            </span>
+            <span className="relative z-10 text-[#d0bcff] font-bold tracking-[0.2em] text-xs uppercase">
+              ← Retour
+            </span>
+          </motion.button>
 
           <div className="relative w-full h-full flex items-center justify-center" onClick={() => setActiveCategory(null)}>
             <div className="absolute w-[600px] h-[600px] md:w-[900px] md:h-[900px] bg-[radial-gradient(circle,rgba(245,158,11,0.15)_0%,transparent_70%)] pointer-events-none" />
