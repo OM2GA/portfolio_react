@@ -104,7 +104,24 @@ function App() {
 
   const [activeThemeColor, setActiveThemeColor] = useState('#d0bcff');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
   const parcoursContainerRef = useRef<HTMLElement>(null);
+
+  const contactInfo = [
+    { icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>, label: "Email", value: "maxence.coste.mc@gmail.com", type: 'copy' },
+    { icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>, label: "Tel", value: "06 59 61 08 95", type: 'copy' },
+    { icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>, label: "LinkedIn", value: "LinkedIn", href: "https://www.linkedin.com/in/maxence-c-62aaa0264", type: 'link' },
+  ];
+
+  const handleContactAction = (info: any) => {
+    if (info.type === 'copy') {
+      navigator.clipboard.writeText(info.value);
+      setCopyFeedback(info.label);
+      setTimeout(() => setCopyFeedback(null), 2000);
+    } else if (info.type === 'link') {
+      window.open(info.href, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   const handleAsteroidHover = (e: React.MouseEvent, id: string | null) => {
     if (!id) {
@@ -444,6 +461,53 @@ function App() {
                       {label}
                     </span>
                   </motion.button>
+                ))}
+              </div>
+
+              {/* Contact Footer Display - Persistent */}
+              <div className="mt-12 flex flex-wrap justify-center gap-x-10 gap-y-4 px-6 py-4 bg-[#d0bcff]/[0.02] backdrop-blur-sm border-y border-[#d0bcff]/10 w-full max-w-3xl">
+                {contactInfo.map((info) => (
+                  <motion.div
+                    key={info.label}
+                    onClick={() => handleContactAction(info)}
+                    className="flex items-center gap-2.5 group/item transition-all duration-300 cursor-pointer relative"
+                  >
+                    <div className="text-[#d0bcff]/60 group-hover/item:text-[#d0bcff] group-hover/item:scale-110 transition-all">
+                      {info.icon}
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <span className="text-[7px] uppercase tracking-[0.2em] text-[#d0bcff]/30 font-black leading-none mb-1">{info.label}</span>
+                      <div className="flex items-center">
+                        <span className="text-[10px] font-bold tracking-widest text-white/50 group-hover/item:text-[#d0bcff] transition-colors">{info.value}</span>
+                        
+                        {/* Indicateur permanent et subtil */}
+                        <div className="ml-2 opacity-20 group-hover/item:opacity-60 transition-opacity text-[#d0bcff]">
+                          {info.type === 'copy' ? (
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                            </svg>
+                          ) : (
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                            </svg>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Feedback "Copié !" */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ 
+                        opacity: copyFeedback === info.label ? 1 : 0,
+                        y: copyFeedback === info.label ? -20 : 10
+                      }}
+                      className="absolute left-1/2 -translate-x-1/2 bg-[#d0bcff] text-[#4f378b] text-[8px] font-black px-2 py-0.5 rounded pointer-events-none uppercase tracking-tighter shadow-[0_0_10px_rgba(208,188,255,0.5)]"
+                    >
+                      Copié !
+                    </motion.div>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>
