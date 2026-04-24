@@ -31,7 +31,7 @@ const timelineData: TimelineStep[] = [
     company: "Université Gustave Eiffel",
     date: "2024 - Maintenant",
     description: "Métiers du Multimédia et de l'Internet. Spécialisation en développement web et design interactif.",
-    color: "#2d2d7b",
+    color: "#d0bcff",
     planetColor: "radial-gradient(circle at 30% 30%, #ffffff, #ffffff)",
     logo: eiffelLogo
   },
@@ -55,15 +55,56 @@ const timelineData: TimelineStep[] = [
   }
 ];
 
+const skillGroups = [
+  { 
+    id: "tech", 
+    name: "Technique", 
+    color: "#61dafb", 
+    radius: 220, 
+    duration: 60, // Même durée pour tout le monde
+    skills: ["React", "Angular", "Tailwind CSS", "Bootstrap", "JavaScript", "PHP", "HTML/CSS"]
+  },
+  { 
+    id: "soft", 
+    name: "Points Forts", 
+    color: "#e91e63", 
+    radius: 320, 
+    duration: 60, // Même durée pour tout le monde
+    skills: ["Agilité", "Trello", "Créatif", "Polyvalent", "Curieux", "Dynamique", "Esprit d'équipe"]
+  },
+  { 
+    id: "lang", 
+    name: "Langues", 
+    color: "#4b8bbe", 
+    radius: 420, 
+    duration: 60, // Même durée pour tout le monde
+    skills: ["Français (Maternel)", "Anglais (B1)", "Espagnol (A2)"]
+  }
+];
+
 function App() {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const [buttonCenter, setButtonCenter] = useState<{ x: number; y: number } | null>(null);
-  const [currentSection, setCurrentSection] = useState<'home' | 'parcours'>('home');
+  const [currentSection, setCurrentSection] = useState<'home' | 'parcours' | 'competences'>('home');
   const [isTraveling, setIsTraveling] = useState(false);
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [listSide, setListSide] = useState<{ x: 'left' | 'right', y: 'top' | 'bottom' }>({ x: 'right', y: 'top' });
 
   const [activeThemeColor, setActiveThemeColor] = useState('#d0bcff');
   const [currentIndex, setCurrentIndex] = useState(0);
   const parcoursContainerRef = useRef<HTMLElement>(null);
+
+  const handleAsteroidHover = (e: React.MouseEvent, id: string) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    const xSide = rect.left + rect.width / 2 < centerX ? 'left' : 'right';
+    const ySide = rect.top + rect.height / 2 < centerY ? 'top' : 'bottom';
+
+    setListSide({ x: xSide, y: ySide });
+    setHoveredCategory(id);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,12 +134,10 @@ function App() {
     setHoveredButton(label);
   };
 
-  const handleSectionChange = (section: 'home' | 'parcours') => {
+  const handleSectionChange = (section: 'home' | 'parcours' | 'competences') => {
     setIsTraveling(true);
-    // On change de section presque immédiatement
     setTimeout(() => {
       setCurrentSection(section);
-      // Le flou commence à disparaître à mi-chemin du voyage (800ms)
       setTimeout(() => setIsTraveling(false), 800);
     }, 50);
   };
@@ -111,7 +150,7 @@ function App() {
     const start = container.scrollTop;
     const target = targetIndex * window.innerHeight;
     const change = target - start;
-    const duration = 800; // 0.8 seconde pour mieux voir l'effet
+    const duration = 800;
     let startTime: number | null = null;
 
     const animateScroll = (currentTime: number) => {
@@ -119,7 +158,6 @@ function App() {
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
       
-      // easeInOutQuint : accélération et décélération très fluides
       const ease = progress < 0.5 
         ? 16 * Math.pow(progress, 5) 
         : 1 - Math.pow(-2 * progress + 2, 5) / 2;
@@ -135,7 +173,7 @@ function App() {
   };
 
   const getGravity = (): GravityType => {
-    if (isTraveling || currentSection === 'parcours') return null;
+    if (isTraveling || currentSection !== 'home') return null;
     if (hoveredButton === 'parcours') return 'left';
     if (hoveredButton === 'expériences') return 'down';
     if (hoveredButton === 'compétences') return 'right';
@@ -155,27 +193,25 @@ function App() {
         gravity={getGravity()} 
         center={buttonCenter} 
         isTraveling={isTraveling} 
-        themeColor={currentSection === 'home' ? '#4f378b' : activeThemeColor}
+        themeColor={currentSection === 'home' ? '#4f378b' : (currentSection === 'parcours' ? activeThemeColor : '#8b5cf6')}
       />
       
-      {/* Container pour le scroll horizontal */}
       <motion.div 
-        initial={{ x: "-50%" }}
+        initial={{ x: "-33.333%" }}
         animate={{ 
-          x: currentSection === 'home' ? "-50%" : "0%",
+          x: currentSection === 'parcours' ? "0%" : (currentSection === 'home' ? "-33.333%" : "-66.666%"),
           scale: isTraveling ? 0.95 : 1, 
           filter: isTraveling ? "blur(4px)" : "blur(0px)" 
         }}
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-        className="flex h-full w-[200%]"
+        className="flex h-full w-[300%]"
       >
-        {/* SECTION PARCOURS (à GAUCHE) */}
+        {/* SECTION PARCOURS */}
         <section 
           ref={parcoursContainerRef}
-          className="w-1/2 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-transparent"
+          className="w-1/3 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-transparent"
         >
-          {/* Éléments fixes du parcours */}
-          <div className="fixed inset-0 pointer-events-none z-50 w-1/2">
+          <div className="fixed inset-0 pointer-events-none z-50 w-full md:w-1/3">
             <button 
               onClick={() => handleSectionChange('home')}
               className="absolute top-8 right-8 pointer-events-auto flex items-center gap-2 uppercase tracking-widest text-sm hover:translate-x-[4px] transition-all"
@@ -184,7 +220,6 @@ function App() {
               Retour →
             </button>
 
-            {/* Navigation Boutons (Fixe) */}
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-auto">
               {currentIndex > 0 && (
                 <motion.button 
@@ -242,10 +277,7 @@ function App() {
           {timelineData.map((step, index) => (
             <div key={index} className="h-screen w-full flex items-center justify-center p-12 snap-start relative">
               <div className={`max-w-6xl w-full flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12`}>
-                
-                {/* Planète 3D-ish */}
                 <div className="relative w-64 h-64 flex-shrink-0 flex items-center justify-center">
-                  {/* Div qui tourne (La planète) */}
                   <motion.div 
                     initial={{ scale: 0.8, opacity: 0 }}
                     whileInView={{ scale: 1, opacity: 1 }}
@@ -260,20 +292,12 @@ function App() {
                     <div className="absolute inset-0 shadow-[inset_-20px_-20px_50px_rgba(0,0,0,0.8)]" />
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent" />
                   </motion.div>
-
-                  {/* Logo fixe par-dessus */}
                   {step.logo && (
                     <div className="relative z-10 w-1/2 h-1/2 flex items-center justify-center pointer-events-none">
-                      <img 
-                        src={step.logo} 
-                        alt={step.company}
-                        className="max-w-full max-h-full object-contain opacity-90"
-                      />
+                      <img src={step.logo} alt={step.company} className="max-w-full max-h-full object-contain opacity-90" />
                     </div>
                   )}
                 </div>
-
-                {/* Contenu Texte */}
                 <motion.div 
                   initial={{ x: index % 2 === 0 ? 50 : -50, opacity: 0 }}
                   whileInView={{ x: 0, opacity: 1 }}
@@ -289,30 +313,27 @@ function App() {
           ))}
         </section>
 
-        {/* SECTION ACCUEIL (à DROITE) */}
-        <section className="w-1/2 h-full flex items-center justify-center p-6 bg-transparent">
+        {/* SECTION ACCUEIL */}
+        <section className="w-1/3 h-full flex items-center justify-center p-6 bg-transparent">
           <div className="max-w-4xl w-full z-10">
-            <motion.div 
-              animate={{ opacity: isTraveling ? 0 : 1 }}
-              className="flex flex-col items-center text-center gap-8"
-            >
+            <motion.div animate={{ opacity: isTraveling ? 0 : 1 }} className="flex flex-col items-center text-center gap-8">
               <div className="space-y-0 flex flex-col items-center">
                 <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-[#d0bcff] leading-none uppercase">Développeur</h2>
                 <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white leading-none uppercase">Front-End</h2>
                 <h1 className="text-2xl md:text-3xl font-light tracking-[0.3em] text-[#d0bcff]/70 mt-4 uppercase">Maxence Coste</h1>
               </div>
-
               <div className="h-px w-40 bg-gradient-to-r from-transparent via-[#d0bcff] to-transparent" />
-
               <p className="text-lg md:text-xl text-slate-200 leading-relaxed max-w-2xl font-light">
                 Passionné par la création multimédia et l'innovation numérique, je souhaite mettre en œuvre mes compétences dans la conception et le développement de projets visuels et interactifs. Je suis prêt à relever les défis qui me permettront de progresser et d'acquérir une plus grande expérience pratique. Mon objectif est de m’impliquer à 100% dans des projets alliant créativité et technologie.
               </p>
-
               <div className="flex flex-wrap justify-center gap-4 pt-4">
                 {["parcours", "expériences", "compétences"].map((label) => (
                   <motion.button
                     key={label}
-                    onClick={() => label === 'parcours' && handleSectionChange('parcours')}
+                    onClick={() => {
+                      if (label === 'parcours') handleSectionChange('parcours');
+                      if (label === 'compétences') handleSectionChange('competences');
+                    }}
                     onMouseEnter={(e) => handleMouseEnter(e, label)}
                     onMouseLeave={() => { setHoveredButton(null); setButtonCenter(null); }}
                     animate={{ 
@@ -327,6 +348,115 @@ function App() {
                 ))}
               </div>
             </motion.div>
+          </div>
+        </section>
+
+        {/* SECTION COMPÉTENCES */}
+        <section className="w-1/3 h-full flex items-center justify-center p-6 bg-transparent relative overflow-hidden">
+          <button 
+            onClick={() => handleSectionChange('home')}
+            className="absolute top-8 left-8 z-50 flex items-center gap-2 uppercase tracking-widest text-sm hover:-translate-x-[4px] transition-all text-[#d0bcff]"
+          >
+            ← Retour
+          </button>
+
+          <div className="relative w-full h-full flex items-center justify-center">
+            <motion.div 
+              animate={{ scale: isTraveling ? 0.5 : [1, 1.05, 1], rotate: 360 }}
+              transition={{ scale: { duration: 4, repeat: Infinity, ease: "easeInOut" }, rotate: { duration: 20, repeat: Infinity, ease: "linear" } }}
+              className="relative z-10 w-48 h-48 md:w-64 md:h-64 rounded-full bg-black shadow-[0_0_80px_rgba(139,92,246,0.6)] flex items-center justify-center"
+            >
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-900/40 via-transparent to-blue-900/40 animate-pulse" />
+              <div className="absolute inset-[-10px] rounded-full border border-purple-500/20 blur-sm" />
+              <h2 className="text-xl md:text-2xl font-black tracking-tighter uppercase text-white z-20">Compétences</h2>
+            </motion.div>
+
+            <motion.div 
+              animate={{ rotate: -360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[400px] h-[400px] md:w-[700px] md:h-[700px] border border-purple-500/10 rounded-full"
+            />
+            
+            {skillGroups.map((group, groupIndex) => {
+              const startRotation = groupIndex * (360 / skillGroups.length);
+              
+              return (
+                <motion.div
+                  key={group.id}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                  initial={{ rotate: startRotation }}
+                  animate={{ rotate: startRotation + 360 }}
+                  transition={{ 
+                    duration: group.duration, 
+                    repeat: Infinity, 
+                    ease: "linear" 
+                  }}
+                  style={{ width: group.radius * 2, height: group.radius * 2 }}
+                >
+                  <div className="absolute top-1/2 right-0 -translate-y-1/2 pointer-events-auto">
+                    <motion.div
+                      onMouseEnter={(e) => handleAsteroidHover(e, group.id)}
+                      onMouseLeave={() => setHoveredCategory(null)}
+                      className="relative cursor-pointer group"
+                      initial={{ rotate: -startRotation }}
+                      animate={{ rotate: -(startRotation + 360) }}
+                      transition={{ 
+                        duration: group.duration, 
+                        repeat: Infinity, 
+                        ease: "linear" 
+                      }}
+                    >
+                      <motion.div
+                        animate={{ 
+                          scale: hoveredCategory === group.id ? 1.2 : 1,
+                          borderRadius: ["40% 60% 70% 30% / 50% 40% 60% 50%", "60% 40% 30% 70% / 40% 50% 50% 60%", "40% 60% 70% 30% / 50% 40% 60% 50%"]
+                        }}
+                        transition={{ borderRadius: { duration: 5, repeat: Infinity, ease: "easeInOut" }, scale: { duration: 0.3 } }}
+                        className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-slate-700 via-slate-800 to-black border-2 border-slate-600/30 flex items-center justify-center text-center p-2 shadow-[0_0_20px_rgba(0,0,0,0.5)] overflow-hidden"
+                        style={{ borderColor: hoveredCategory === group.id ? group.color : undefined }}
+                      >
+                        <span className="text-[10px] md:text-xs font-black uppercase tracking-tighter leading-tight drop-shadow-md">{group.name}</span>
+                        <motion.div 
+                          animate={{ opacity: hoveredCategory === group.id ? 0.6 : 0.2 }}
+                          className="absolute inset-0 blur-md"
+                          style={{ backgroundColor: group.color }}
+                        />
+                      </motion.div>
+
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ 
+                          opacity: hoveredCategory === group.id ? 1 : 0,
+                          scale: hoveredCategory === group.id ? 1 : 0.8,
+                          x: hoveredCategory === group.id 
+                            ? (listSide.x === 'left' ? -40 : 40) // S'éloigne du centre
+                            : (listSide.x === 'left' ? -20 : 20),
+                          pointerEvents: hoveredCategory === group.id ? "auto" : "none"
+                        }}
+                        className={`absolute flex flex-col gap-2 z-50 min-w-[180px]
+                          ${listSide.x === 'left' ? 'right-full mr-4' : 'left-full ml-4'}
+                          ${listSide.y === 'bottom' ? 'bottom-0' : 'top-0'}
+                        `}
+                      >
+                        {group.skills.map((skill, i) => (
+                          <motion.div
+                            key={skill}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: hoveredCategory === group.id ? 1 : 0 }}
+                            transition={{ delay: i * 0.05 }}
+                            className="bg-black/90 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-full flex items-center gap-3 shadow-2xl"
+                            style={{ borderLeft: `3px solid ${group.color}` }}
+                          >
+                            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: group.color }} />
+                            <span className="text-xs md:text-sm font-medium whitespace-nowrap text-white/90">{skill}</span>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </section>
       </motion.div>
