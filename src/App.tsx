@@ -247,7 +247,7 @@ function App() {
                 scale: hoveredButton === 'retour' ? 0.9 : 1,
               }}
               whileTap={{ scale: 0.95 }}
-              className="absolute top-8 right-8 pointer-events-auto flex items-center justify-center px-8 py-3 group transition-all duration-500 min-w-[160px] h-12 z-50"
+              className="absolute top-1/2 right-8 -translate-y-1/2 pointer-events-auto flex items-center justify-center px-8 py-3 group transition-all duration-500 min-w-[160px] h-12 z-50"
             >
               <div 
                 className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-[#d0bcff]/20 transition-all duration-500 group-hover:bg-[#d0bcff]/5 group-hover:border-[#d0bcff]/50"
@@ -431,7 +431,7 @@ function App() {
               scale: hoveredButton === 'retour' ? 0.9 : 1,
             }}
             whileTap={{ scale: 0.95 }}
-            className="absolute top-8 left-8 pointer-events-auto flex items-center justify-center px-8 py-3 group transition-all duration-500 min-w-[160px] h-12 z-50"
+            className="absolute top-1/2 left-8 -translate-y-1/2 pointer-events-auto flex items-center justify-center px-8 py-3 group transition-all duration-500 min-w-[160px] h-12 z-50"
           >
             <div 
               className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-[#d0bcff]/20 transition-all duration-500 group-hover:bg-[#d0bcff]/5 group-hover:border-[#d0bcff]/50"
