@@ -76,7 +76,7 @@ const skillGroups = [
     id: "lang",
     name: "Langues",
     color: "#4b8bbe",
-    radius: 460,
+    radius: 420,
     duration: 60, // Même durée pour tout le monde
     skills: ["Français (Maternel)", "Anglais (B1)", "Espagnol (A2)"]
   }
