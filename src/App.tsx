@@ -56,32 +56,31 @@ const timelineData: TimelineStep[] = [
 ];
 
 const skillGroups = [
-  { 
-    id: "tech", 
-    name: "Technique", 
-    color: "#61dafb", 
-    radius: 220, 
+  {
+    id: "tech",
+    name: "Technique",
+    color: "#61dafb",
+    radius: 260,
     duration: 60, // Même durée pour tout le monde
     skills: ["React", "Angular", "Tailwind CSS", "Bootstrap", "JavaScript", "PHP", "HTML/CSS"]
   },
-  { 
-    id: "soft", 
-    name: "Points Forts", 
-    color: "#e91e63", 
-    radius: 320, 
+  {
+    id: "soft",
+    name: "Points Forts",
+    color: "#e91e63",
+    radius: 360,
     duration: 60, // Même durée pour tout le monde
     skills: ["Agilité", "Trello", "Créatif", "Polyvalent", "Curieux", "Dynamique", "Esprit d'équipe"]
   },
-  { 
-    id: "lang", 
-    name: "Langues", 
-    color: "#4b8bbe", 
-    radius: 420, 
+  {
+    id: "lang",
+    name: "Langues",
+    color: "#4b8bbe",
+    radius: 460,
     duration: 60, // Même durée pour tout le monde
     skills: ["Français (Maternel)", "Anglais (B1)", "Espagnol (A2)"]
   }
 ];
-
 function App() {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const [buttonCenter, setButtonCenter] = useState<{ x: number; y: number } | null>(null);
