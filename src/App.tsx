@@ -97,6 +97,7 @@ function App() {
   const [buttonCenter, setButtonCenter] = useState<{ x: number; y: number } | null>(null);
   const [currentSection, setCurrentSection] = useState<'home' | 'parcours' | 'competences'>('home');
   const [isTraveling, setIsTraveling] = useState(false);
+  const [travelDirection, setTravelDirection] = useState<'left' | 'right'>('left');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [listSide, setListSide] = useState<{ x: 'left' | 'right', y: 'top' | 'bottom' }>({ x: 'right', y: 'top' });
@@ -177,6 +178,16 @@ function App() {
   };
 
   const handleSectionChange = (section: 'home' | 'parcours' | 'competences') => {
+    const sections = ['parcours', 'home', 'competences'];
+    const currentIndexVal = sections.indexOf(currentSection);
+    const nextIndexVal = sections.indexOf(section);
+    
+    if (nextIndexVal > currentIndexVal) {
+      setTravelDirection('right');
+    } else {
+      setTravelDirection('left');
+    }
+
     setIsTraveling(true);
     setTimeout(() => {
       setCurrentSection(section);
@@ -209,6 +220,7 @@ function App() {
         gravity={getGravity()} 
         center={buttonCenter} 
         isTraveling={isTraveling} 
+        travelDirection={travelDirection}
         themeColor={currentSection === 'home' ? '#4f378b' : (currentSection === 'parcours' ? activeThemeColor : '#8b5cf6')}
       />
       

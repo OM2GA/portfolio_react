@@ -14,10 +14,11 @@ interface StarryBackgroundProps {
   gravity: 'left' | 'right' | 'down' | null;
   center?: { x: number; y: number } | null;
   isTraveling?: boolean;
+  travelDirection?: 'left' | 'right';
   themeColor?: string;
 }
 
-export const StarryBackground = ({ gravity, center, isTraveling, themeColor = "#4f378b" }: StarryBackgroundProps) => {
+export const StarryBackground = ({ gravity, center, isTraveling, travelDirection = 'left', themeColor = "#4f378b" }: StarryBackgroundProps) => {
   const [stars, setStars] = useState<Star[]>([]);
 
   useEffect(() => {
@@ -41,10 +42,10 @@ export const StarryBackground = ({ gravity, center, isTraveling, themeColor = "#
 
   const getTargetPosition = (star: Star) => {
     if (isTraveling) {
-      // Pendant le voyage, on décale légèrement les étoiles et on les étire
-      // sans les faire sortir de l'écran
+      // Pendant le voyage, on décale les étoiles selon la direction
+      const offset = travelDirection === 'left' ? 15 : -15;
       return { 
-        left: `${star.x + 15}%`, 
+        left: `${star.x + offset}%`, 
         top: `${star.y}%`,
         width: star.size * 12, // Étirement warp drive
         opacity: 0.7
@@ -117,7 +118,7 @@ export const StarryBackground = ({ gravity, center, isTraveling, themeColor = "#
 
       <motion.div 
         animate={{ 
-          x: isTraveling ? "-10%" : "0%",
+          x: isTraveling ? (travelDirection === 'left' ? "10%" : "-10%") : "0%",
           scale: isTraveling ? 1.2 : 1
         }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
