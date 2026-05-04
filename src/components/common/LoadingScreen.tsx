@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
-import { StarryBackground } from "./StarryBackground";
+import { StarryBackground } from "../layout/StarryBackground";
 
 export function LoadingScreen() {
   const [progress, setProgress] = useState(0);

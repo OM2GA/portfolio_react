@@ -1,24 +1,44 @@
-import { StarryBackground } from "./components/StarryBackground";
-import { LoadingScreen } from "./components/LoadingScreen";
+import { motion, AnimatePresence } from "motion/react";
+import { useState, useRef, useEffect } from "react";
+
+// Components
+import { StarryBackground } from "./components/layout/StarryBackground";
+import { LoadingScreen } from "./components/common/LoadingScreen";
 import { HomeSection } from "./components/sections/HomeSection";
 import { ParcoursSection } from "./components/sections/ParcoursSection";
 import { SkillsSection } from "./components/sections/SkillsSection";
-import { motion, AnimatePresence } from "motion/react";
-import { useState, useRef, useEffect } from "react";
-import type { GravityType } from "./types";
-import { timelineData } from "./data/portfolioData";
+
+// Hooks
+import { useNavigation } from "./hooks/useNavigation";
+import { useParcoursScroll } from "./hooks/useParcoursScroll";
+import { useInteractionTracker } from "./hooks/useInteractionTracker";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
-  const [buttonCenter, setButtonCenter] = useState<{ x: number; y: number } | null>(null);
-  const [currentSection, setCurrentSection] = useState<'home' | 'parcours' | 'competences'>('home');
-  const [isTraveling, setIsTraveling] = useState(false);
-  const [travelDirection, setTravelDirection] = useState<'left' | 'right'>('left');
-
-  const [activeThemeColor, setActiveThemeColor] = useState('#d0bcff');
-  const [currentIndex, setCurrentIndex] = useState(0);
   const parcoursContainerRef = useRef<HTMLElement>(null);
+
+  // Custom Hooks
+  const { 
+    currentSection, 
+    isTraveling, 
+    travelDirection, 
+    handleSectionChange 
+  } = useNavigation('home');
+
+  const { 
+    currentIndex, 
+    activeThemeColor, 
+    scrollToIndex 
+  } = useParcoursScroll(parcoursContainerRef);
+
+  const {
+    hoveredButton,
+    buttonCenter,
+    setHoveredButton,
+    setButtonCenter,
+    handleMouseEnter,
+    getGravity
+  } = useInteractionTracker(currentSection, isTraveling);
 
   useEffect(() => {
     // Simulation de chargement
@@ -26,74 +46,12 @@ function App() {
       setIsLoading(false);
     }, 2500);
 
-    const handleScroll = () => {
-      if (parcoursContainerRef.current) {
-        const scrollTop = parcoursContainerRef.current.scrollTop;
-        const index = Math.round(scrollTop / window.innerHeight);
-        setCurrentIndex(index);
-        if (timelineData[index]) {
-          setActiveThemeColor(timelineData[index].color);
-        }
-      }
-    };
-
-    const container = parcoursContainerRef.current;
-    if (container) {
-      container.addEventListener('scroll', handleScroll);
-    }
-    return () => {
-      clearTimeout(timer);
-      container?.removeEventListener('scroll', handleScroll);
-    };
+    return () => clearTimeout(timer);
   }, []);
 
-  const scrollToIndex = (index: number) => {
-    if (!parcoursContainerRef.current || !timelineData[index]) return;
-    
-    parcoursContainerRef.current.scrollTo({
-      top: index * window.innerHeight,
-      behavior: 'smooth'
-    });
-  };
-
-  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>, label: string) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setButtonCenter({
-      x: ((rect.left + rect.right) / 2 / window.innerWidth) * 100,
-      y: ((rect.top + rect.bottom) / 2 / window.innerHeight) * 100,
-    });
-    setHoveredButton(label);
-  };
-
-  const handleSectionChange = (section: 'home' | 'parcours' | 'competences') => {
-    const sections = ['parcours', 'home', 'competences'];
-    const currentIndexVal = sections.indexOf(currentSection);
-    const nextIndexVal = sections.indexOf(section);
-    
-    if (nextIndexVal > currentIndexVal) {
-      setTravelDirection('right');
-    } else {
-      setTravelDirection('left');
-    }
-
-    setIsTraveling(true);
-    setTimeout(() => {
-      setCurrentSection(section);
-      setTimeout(() => setIsTraveling(false), 800);
-    }, 50);
-  };
-
-  const getGravity = (): GravityType => {
-    if (isTraveling) return null;
-    if (currentSection === 'home') {
-      if (hoveredButton === 'parcours') return 'left';
-      if (hoveredButton === 'projets') return 'down';
-      if (hoveredButton === 'compétences') return 'right';
-    } else if (hoveredButton === 'retour') {
-      return currentSection === 'parcours' ? 'right' : 'left';
-    }
-    return null;
-  };
+  const themeColor = currentSection === 'home' 
+    ? '#4f378b' 
+    : (currentSection === 'parcours' ? activeThemeColor : '#8b5cf6');
 
   return (
     <main className="relative h-screen w-full text-white overflow-hidden">
@@ -106,7 +64,7 @@ function App() {
         center={buttonCenter} 
         isTraveling={isTraveling} 
         travelDirection={travelDirection}
-        themeColor={currentSection === 'home' ? '#4f378b' : (currentSection === 'parcours' ? activeThemeColor : '#8b5cf6')}
+        themeColor={themeColor}
       />
       
       <motion.div 
