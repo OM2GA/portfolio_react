@@ -15,7 +15,7 @@ import { useInteractionTracker } from "./hooks/useInteractionTracker";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const parcoursContainerRef = useRef<HTMLElement>(null);
+  const parcoursContainerRef = useRef<HTMLDivElement>(null);
 
   // Custom Hooks
   const { 

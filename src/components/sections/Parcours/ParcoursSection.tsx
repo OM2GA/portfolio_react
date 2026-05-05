@@ -7,7 +7,7 @@ import { NavButton } from "../../ui/NavButton";
 import { TimelineItem } from "./TimelineItem";
 
 interface ParcoursSectionProps {
-  parcoursContainerRef: React.RefObject<HTMLElement | null>;
+  parcoursContainerRef: React.RefObject<HTMLDivElement | null>;
   currentIndex: number;
   activeThemeColor: string;
   hoveredButton: string | null;
