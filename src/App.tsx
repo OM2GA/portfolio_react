@@ -13,6 +13,9 @@ import { useNavigation } from "./hooks/useNavigation";
 import { useParcoursScroll } from "./hooks/useParcoursScroll";
 import { useInteractionTracker } from "./hooks/useInteractionTracker";
 
+// Constants
+import { COLORS } from "./constants/theme";
+
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const parcoursContainerRef = useRef<HTMLDivElement>(null);
@@ -50,8 +53,8 @@ function App() {
   }, []);
 
   const themeColor = currentSection === 'home' 
-    ? '#4f378b' 
-    : (currentSection === 'parcours' ? activeThemeColor : '#8b5cf6');
+    ? COLORS.primaryDark 
+    : (currentSection === 'parcours' ? activeThemeColor : COLORS.secondary);
 
   return (
     <main className="relative h-screen w-full text-white overflow-hidden">

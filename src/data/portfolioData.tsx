@@ -1,8 +1,9 @@
-import eiffelLogo from "../assets/Logo_universite_gustave_eiffel.png";
-import socgenLogo from "../assets/logo-societe-generale.png";
-import bnpLogo from "../assets/bnp-paribas-logo.webp";
+import eiffelLogo from "../assets/logos/Logo_universite_gustave_eiffel.png";
+import socgenLogo from "../assets/logos/logo-societe-generale.png";
+import bnpLogo from "../assets/logos/bnp-paribas-logo.webp";
 import type { TimelineStep, SkillGroup, ContactInfo } from "../types";
 import { MailIcon, PhoneIcon, LinkedInIcon } from "../components/common/ContactIcons";
+import { COLORS } from "../constants/theme";
 
 export const timelineData: TimelineStep[] = [
   {
@@ -10,16 +11,16 @@ export const timelineData: TimelineStep[] = [
     company: "Lycée Jules Ferry",
     date: "2024",
     description: "Spécialité Mathématiques et Numérique et Sciences Informatiques.",
-    color: "#3b82f6", // Bleu
-    planetColor: "radial-gradient(circle at 30% 30%, #3b82f6, #1d4ed8)"
+    color: COLORS.companies.julesFerry,
+    planetColor: `radial-gradient(circle at 30% 30%, ${COLORS.companies.julesFerry}, #1d4ed8)`
   },
   {
     title: "BUT MMI (2ème année)",
     company: "Université Gustave Eiffel",
     date: "2024 - Maintenant",
     description: "Métiers du Multimédia et de l'Internet. Spécialisation en développement web et design interactif.",
-    color: "#d0bcff",
-    planetColor: "radial-gradient(circle at 30% 30%, #ffffff, #ffffff)",
+    color: COLORS.companies.eiffel,
+    planetColor: `radial-gradient(circle at 30% 30%, ${COLORS.white}, ${COLORS.white})`,
     logo: eiffelLogo
   },
   {
@@ -38,8 +39,8 @@ export const timelineData: TimelineStep[] = [
         <p className="pt-2 italic text-sm opacity-80">Environnement : Figma, outils de montage vidéo, méthodologies UX/UI, travail en équipe pluridisciplinaire.</p>
       </div>
     ),
-    color: "#ff0000", // Rouge SocGen
-    planetColor: "radial-gradient(circle at 30% 30%, #ff0000, #4a0000)",
+    color: COLORS.companies.socgen,
+    planetColor: `radial-gradient(circle at 30% 30%, ${COLORS.companies.socgen}, #4a0000)`,
     logo: socgenLogo
   },
   {
@@ -47,8 +48,8 @@ export const timelineData: TimelineStep[] = [
     company: "BNP Paribas",
     date: "07/04 AU 01/06 2026",
     description: "Chargé du développement d'assets front-end en environnement de test pour les squads BNPP et Hello Bank, j'ai recréé la structure et le design de la page d'accueil BNP Paribas. Cette intégration sous VS Code a mobilisé HTML, CSS et les frameworks Angular, Tailwind et Bootstrap, confirmant ma polyvalence technique sur les outils de référence du marché.",
-    color: "#00a082", // Vert BNP
-    planetColor: "radial-gradient(circle at 30% 30%, #00a082, #004a3d)",
+    color: COLORS.companies.bnp,
+    planetColor: `radial-gradient(circle at 30% 30%, ${COLORS.companies.bnp}, #004a3d)`,
     logo: bnpLogo
   }
 ];

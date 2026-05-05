@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
 import { StarryBackground } from "../layout/StarryBackground";
+import { COLORS } from "../../constants/theme";
 
 export function LoadingScreen() {
   const [progress, setProgress] = useState(0);
@@ -22,7 +23,7 @@ export function LoadingScreen() {
       transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
       className="fixed inset-0 z-[100] bg-[#020617] flex flex-col items-center justify-center overflow-hidden"
     >
-      <StarryBackground gravity={null} center={null} isTraveling={true} travelDirection="left" themeColor="#4f378b" />
+      <StarryBackground gravity={null} center={null} isTraveling={true} travelDirection="left" themeColor={COLORS.primaryDark} />
       
       <div className="relative z-10 flex flex-col items-center gap-8">
         <div className="relative">
