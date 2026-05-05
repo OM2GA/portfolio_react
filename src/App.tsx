@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from "react";
 // Components
 import { StarryBackground } from "./components/layout/StarryBackground";
 import { LoadingScreen } from "./components/common/LoadingScreen";
-import { HomeSection } from "./components/sections/HomeSection";
-import { ParcoursSection } from "./components/sections/ParcoursSection";
-import { SkillsSection } from "./components/sections/SkillsSection";
+import { HomeSection } from "./components/sections/Home/HomeSection";
+import { ParcoursSection } from "./components/sections/Parcours/ParcoursSection";
+import { SkillsSection } from "./components/sections/Skills/SkillsSection";
 
 // Hooks
 import { useNavigation } from "./hooks/useNavigation";

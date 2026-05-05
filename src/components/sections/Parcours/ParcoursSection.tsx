@@ -1,9 +1,13 @@
 import { motion } from "motion/react";
-import { timelineData } from "../../data/portfolioData";
-import { hexToRgba } from "../../utils/colorUtils";
+import { timelineData } from "../../../data/portfolioData";
+import { hexToRgba } from "../../../utils/colorUtils";
+
+// UI Components
+import { NavButton } from "../../ui/NavButton";
+import { TimelineItem } from "./TimelineItem";
 
 interface ParcoursSectionProps {
-  parcoursContainerRef: React.RefObject<HTMLElement>;
+  parcoursContainerRef: React.RefObject<HTMLElement | null>;
   currentIndex: number;
   activeThemeColor: string;
   hoveredButton: string | null;
@@ -26,38 +30,24 @@ export function ParcoursSection({
   scrollToIndex
 }: ParcoursSectionProps) {
   return (
-    <section 
-      ref={parcoursContainerRef}
-      className="w-1/3 h-full relative overflow-y-auto overflow-x-hidden no-scrollbar bg-transparent snap-y snap-mandatory"
-    >
-      <div className="fixed inset-0 pointer-events-none z-50 w-full md:w-1/3">
-        <motion.button 
-          onClick={() => handleSectionChange('home')}
-          onMouseEnter={(e) => handleMouseEnter(e, 'retour')}
-          onMouseLeave={() => { setHoveredButton(null); setButtonCenter(null); }}
-          animate={{ 
-            opacity: hoveredButton === 'retour' ? 0 : 1,
-            scale: hoveredButton === 'retour' ? 0.9 : 1,
-          }}
-          whileTap={{ scale: 0.95 }}
-          className="absolute top-1/2 right-8 -translate-y-1/2 pointer-events-auto flex items-center justify-center px-8 py-3 group transition-all duration-500 min-w-[160px] h-12 z-50"
-        >
-          <div 
-            className="absolute inset-0 bg-white/[0.03] backdrop-blur-md border border-[#d0bcff]/20 transition-all duration-500 group-hover:bg-[#d0bcff]/5 group-hover:border-[#d0bcff]/50"
-            style={{ 
-              clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)",
-              borderColor: hexToRgba(activeThemeColor, 0.4)
+    <section className="w-1/3 h-full relative overflow-hidden bg-transparent">
+      {/* Overlay UI (Fixe par rapport à la section, mais bouge avec le slider) */}
+      <div className="absolute inset-0 pointer-events-none z-50">
+        <div className="absolute top-10 right-10 z-50 pointer-events-auto">
+          <NavButton
+            label="Retour →"
+            onClick={() => handleSectionChange('home')}
+            onMouseEnter={(e) => handleMouseEnter(e, 'retour')}
+            onMouseLeave={() => { 
+              setHoveredButton(null); 
+              setButtonCenter(null); 
             }}
+            isHovered={hoveredButton === 'retour'}
+            nodeType="Return_Node"
+            themeColor={activeThemeColor}
+            className="px-8 py-3 min-w-[160px] h-12"
           />
-          <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#d0bcff]/40 transition-colors group-hover:border-[#d0bcff]" style={{ borderColor: hexToRgba(activeThemeColor, 0.4) }} />
-          <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#d0bcff]/40 transition-colors group-hover:border-[#d0bcff]" style={{ borderColor: hexToRgba(activeThemeColor, 0.4) }} />
-          <span className="absolute -top-2 left-4 text-[7px] font-black text-[#d0bcff]/40 tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity uppercase">
-            Return_Node
-          </span>
-          <span className="relative z-10 font-bold tracking-[0.2em] text-xs uppercase" style={{ color: activeThemeColor }}>
-            Retour →
-          </span>
-        </motion.button>
+        </div>
 
         {/* Pagination latérale */}
         <div className="absolute left-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-6 pointer-events-auto z-50">
@@ -87,6 +77,7 @@ export function ParcoursSection({
           ))}
         </div>
 
+        {/* Flèches de navigation verticale */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-auto">
           {currentIndex > 0 && (
             <motion.button 
@@ -141,43 +132,15 @@ export function ParcoursSection({
         </div>
       </div>
 
-      {timelineData.map((step, index) => (
-        <div key={index} className="h-screen w-full flex items-center justify-center p-12 snap-start relative">
-          <div className={`max-w-6xl w-full flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12`}>
-            <div className="relative w-64 h-64 flex-shrink-0 flex items-center justify-center">
-              <motion.div 
-                initial={{ scale: 0.8, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                animate={{ rotate: 360 }}
-                transition={{ 
-                  scale: { duration: 1 },
-                  rotate: { duration: 20, repeat: Infinity, ease: "linear" }
-                }}
-                style={{ background: step.planetColor }}
-                className="absolute inset-0 rounded-full shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
-              >
-                <div className="absolute inset-0 shadow-[inset_-20px_-20px_50px_rgba(0,0,0,0.8)]" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent" />
-              </motion.div>
-              {step.logo && (
-                <div className="relative z-10 w-1/2 h-1/2 flex items-center justify-center pointer-events-none">
-                  <img src={step.logo} alt={step.company} className="max-w-full max-h-full object-contain opacity-90" />
-                </div>
-              )}
-            </div>
-            <motion.div 
-              initial={{ x: index % 2 === 0 ? 50 : -50, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              className={`flex-1 space-y-4 ${index % 2 === 0 ? 'text-left' : 'text-right'}`}
-            >
-              <span className="text-sm font-bold tracking-widest uppercase opacity-60" style={{ color: step.color }}>{step.date}</span>
-              <h3 className="text-3xl md:text-5xl font-black uppercase leading-tight" style={{ color: step.color }}>{step.company}</h3>
-              <h4 className="text-xl md:text-2xl font-light text-white/90">{step.title}</h4>
-              <div className={`text-slate-400 leading-relaxed max-w-xl ml-auto mr-auto text-left ${index % 2 === 0 ? 'md:ml-0' : 'md:mr-0'}`}>{step.description}</div>
-            </motion.div>
-          </div>
-        </div>
-      ))}
+      {/* Contenu scrollable */}
+      <div 
+        ref={parcoursContainerRef}
+        className="h-full overflow-y-auto overflow-x-hidden no-scrollbar snap-y snap-mandatory scroll-smooth"
+      >
+        {timelineData.map((step, index) => (
+          <TimelineItem key={index} step={step} index={index} />
+        ))}
+      </div>
     </section>
   );
 }

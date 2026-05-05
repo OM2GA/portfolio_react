@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, RefObject } from 'react';
+import { useState, useEffect, type RefObject } from 'react';
 import { timelineData } from '../data/portfolioData';
 
-export const useParcoursScroll = (containerRef: RefObject<HTMLElement>) => {
+export const useParcoursScroll = (containerRef: RefObject<HTMLElement | null>) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeThemeColor, setActiveThemeColor] = useState('#d0bcff');
 
