@@ -60,7 +60,7 @@ export const skillGroups: SkillGroup[] = [
     name: "Technique",
     color: "#00d8ff", // Cyan électrique
     radius: 240,
-    duration: 50,
+    duration: 80,
     skills: ["React", "Angular", "Tailwind CSS", "Bootstrap", "JavaScript", "PHP", "HTML/CSS"],
     planetColor: "radial-gradient(circle at 30% 30%, #4ae5ff, #00d8ff, #003a45)"
   },
@@ -69,7 +69,7 @@ export const skillGroups: SkillGroup[] = [
     name: "Points Forts",
     color: "#ff2d55", // Rose vibrant
     radius: 340,
-    duration: 75,
+    duration: 80,
     skills: ["Agilité", "Trello", "Créatif", "Polyvalent", "Curieux", "Dynamique", "Esprit d'équipe"],
     planetColor: "radial-gradient(circle at 30% 30%, #ff6b8b, #ff2d55, #4a0010)"
   },
@@ -78,7 +78,7 @@ export const skillGroups: SkillGroup[] = [
     name: "Langues",
     color: "#7c4dff", // Violet électrique
     radius: 440,
-    duration: 100,
+    duration: 80,
     skills: ["Français (Maternel)", "Anglais (B1)", "Espagnol (A2)"],
     planetColor: "radial-gradient(circle at 30% 30%, #b392ff, #7c4dff, #1e004a)"
   }
