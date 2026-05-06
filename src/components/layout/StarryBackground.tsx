@@ -141,19 +141,18 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
       {/* ÉTOILES UNIQUEMENT - Système de boucle infinie */}
       <motion.div 
         animate={{ 
-          x: isTraveling ? (travelDirection === 'left' ? ["0%", "-50%"] : ["0%", "50%"]) : "0%",
+          x: isTraveling ? (travelDirection === 'left' ? ["0%", "-33.333%"] : ["0%", "33.333%"]) : "0%",
         }}
         transition={{ 
           x: isTraveling ? { duration: 10, repeat: Infinity, ease: "linear" } : { duration: 1.5, ease: "easeInOut" },
         }}
-        className="absolute top-0 bottom-0 left-0 w-[200%] h-full"
-        style={{ x: travelDirection === 'left' ? '0%' : '-50%' }}
+        className="absolute top-0 bottom-0 left-[-100%] w-[300%] h-full"
       >
-        {[0, 1].map((blockIndex) => (
+        {[0, 1, 2].map((blockIndex) => (
           <div 
             key={blockIndex} 
-            className="absolute top-0 bottom-0 w-1/2" 
-            style={{ left: `${blockIndex * 50}%` }}
+            className="absolute top-0 bottom-0 w-1/3" 
+            style={{ left: `${(blockIndex * 100) / 3}%` }}
           >
             {stars.map((star) => {
               const targetPos = getTargetPosition(star);
