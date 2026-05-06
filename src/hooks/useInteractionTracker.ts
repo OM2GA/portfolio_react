@@ -17,11 +17,14 @@ export const useInteractionTracker = (currentSection: SectionType, isTraveling: 
 
   const getGravity = (): GravityType => {
     if (isTraveling) return null;
+    const label = hoveredButton?.toLowerCase();
+
     if (currentSection === 'home') {
-      if (hoveredButton === 'parcours') return 'left';
-      if (hoveredButton === 'projets') return 'down';
-      if (hoveredButton === 'compétences') return 'right';
-    } else if (hoveredButton === 'retour') {
+      if (label === 'parcours') return 'left';
+      if (label === 'projets') return 'down';
+      if (label === 'compétences') return 'right';
+    } else if (label === 'retour') {
+      if (currentSection === 'projets') return 'up';
       return currentSection === 'parcours' ? 'right' : 'left';
     }
     return null;

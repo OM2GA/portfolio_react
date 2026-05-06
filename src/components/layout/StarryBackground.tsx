@@ -14,7 +14,7 @@ interface StarryBackgroundProps {
   gravity: 'left' | 'right' | 'down' | null;
   center?: { x: number; y: number } | null;
   isTraveling?: boolean;
-  travelDirection?: 'left' | 'right';
+  travelDirection?: 'left' | 'right' | 'up' | 'down';
   themeColor?: string;
 }
 
@@ -42,14 +42,16 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
 
   const getTargetPosition = (star: Star) => {
     if (isTraveling) {
+      const isVertical = travelDirection === 'up' || travelDirection === 'down';
       return { 
         left: `${star.x}%`, 
         top: `${star.y}%`,
-        width: star.size * 15,
+        width: isVertical ? star.size : star.size * 15,
+        height: isVertical ? star.size * 15 : star.size,
         opacity: 0.7
       };
     }
-    if (!gravity || !center || star.id >= 60) return { left: `${star.x}%`, top: `${star.y}%`, width: star.size, opacity: 1 };
+    if (!gravity || !center || star.id >= 60) return { left: `${star.x}%`, top: `${star.y}%`, width: star.size, height: star.size, opacity: 1 };
     
     const id = star.id;
     const spread = 0.5; 
@@ -85,7 +87,8 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
         tx = center.x + arrowSize/2 - t * (arrowSize/2.5);
         ty = center.y + t * (arrowSize/2.5);
       }
-    } else if (gravity === 'down') {
+    }
+ else if (gravity === 'down') {
       if (id < 40) {
         tx = center.x;
         ty = (center.y + arrowSize/2) - (id / 40) * (arrowSize * 1.5);
@@ -98,10 +101,25 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
         tx = center.x + t * (arrowSize/2.5);
         ty = (center.y + arrowSize/2) - t * (arrowSize/2.5);
       }
+    } else if (gravity === 'up') {
+      if (id < 40) {
+        tx = center.x;
+        ty = (center.y - arrowSize/2) + (id / 40) * (arrowSize * 1.5);
+      } else if (id < 50) {
+        const t = (id - 40) / 10;
+        tx = center.x - t * (arrowSize/2.5);
+        ty = (center.y - arrowSize/2) + t * (arrowSize/2.5);
+      } else {
+        const t = (id - 50) / 10;
+        tx = center.x + t * (arrowSize/2.5);
+        ty = (center.y - arrowSize/2) + t * (arrowSize/2.5);
+      }
     }
 
-    return { left: `${tx + rx}%`, top: `${ty + ry}%`, width: star.size, opacity: 1 };
+    return { left: `${tx + rx}%`, top: `${ty + ry}%`, width: star.size, height: star.size, opacity: 1 };
   };
+
+  const isVertical = travelDirection === 'up' || travelDirection === 'down';
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden bg-[#000814]">
@@ -112,10 +130,11 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
         className="absolute inset-0 opacity-[0.08]"
       />
 
-      {/* Nébuleuses et Halo - RÉTABLIS À L'ORIGINAL (fixes) */}
+      {/* Nébuleuses et Halo */}
       <motion.div 
         animate={{ 
-          x: isTraveling ? (travelDirection === 'left' ? "10%" : "-10%") : "0%",
+          x: isTraveling && !isVertical ? (travelDirection === 'left' ? "10%" : "-10%") : "0%",
+          y: isTraveling && isVertical ? (travelDirection === 'up' ? "10%" : "-10%") : "0%",
           scale: isTraveling ? 1.2 : 1
         }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
@@ -138,21 +157,26 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
         />
       </motion.div>
 
-      {/* ÉTOILES UNIQUEMENT - Système de boucle infinie */}
+      {/* ÉTOILES - Système de boucle infinie (Horizontal ou Vertical) */}
       <motion.div 
         animate={{ 
-          x: isTraveling ? (travelDirection === 'left' ? ["0%", "-33.333%"] : ["0%", "33.333%"]) : "0%",
+          x: isTraveling && !isVertical ? (travelDirection === 'left' ? ["0%", "-33.333%"] : ["0%", "33.333%"]) : "0%",
+          y: isTraveling && isVertical ? (travelDirection === 'up' ? ["0%", "-33.333%"] : ["0%", "33.333%"]) : "0%",
         }}
         transition={{ 
-          x: isTraveling ? { duration: 10, repeat: Infinity, ease: "linear" } : { duration: 1.5, ease: "easeInOut" },
+          x: isTraveling && !isVertical ? { duration: 10, repeat: Infinity, ease: "linear" } : { duration: 1.5, ease: "easeInOut" },
+          y: isTraveling && isVertical ? { duration: 10, repeat: Infinity, ease: "linear" } : { duration: 1.5, ease: "easeInOut" },
         }}
-        className="absolute top-0 bottom-0 left-[-100%] w-[300%] h-full"
+        className={`absolute ${isVertical ? 'left-0 right-0 top-[-100%] h-[300%] w-full flex-col' : 'top-0 bottom-0 left-[-100%] w-[300%] h-full flex'}`}
       >
         {[0, 1, 2].map((blockIndex) => (
           <div 
             key={blockIndex} 
-            className="absolute top-0 bottom-0 w-1/3" 
-            style={{ left: `${(blockIndex * 100) / 3}%` }}
+            className={`absolute ${isVertical ? 'left-0 right-0 h-1/3' : 'top-0 bottom-0 w-1/3'}`} 
+            style={{ 
+              left: isVertical ? 0 : `${(blockIndex * 100) / 3}%`,
+              top: isVertical ? `${(blockIndex * 100) / 3}%` : 0
+            }}
           >
             {stars.map((star) => {
               const targetPos = getTargetPosition(star);
@@ -165,17 +189,18 @@ export const StarryBackground = ({ gravity, center, isTraveling, travelDirection
                     left: targetPos.left,
                     top: targetPos.top,
                     width: targetPos.width,
+                    height: targetPos.height,
                     opacity: isTraveling ? 0.6 : [0.4, 1, 0.4],
                   }}
                   transition={{
                     left: isTraveling ? { duration: 0 } : { type: "spring", stiffness: 130, damping: 18 },
                     top: isTraveling ? { duration: 0 } : { type: "spring", stiffness: 130, damping: 18 },
                     width: { duration: 0.8, ease: "easeInOut" },
+                    height: { duration: 0.8, ease: "easeInOut" },
                     opacity: isTraveling 
                       ? { duration: 0.5 } 
                       : { duration: star.duration, repeat: Infinity, delay: star.delay }
                   }}
-                  style={{ height: star.size, width: star.size }}
                 />
               );
             })}

@@ -7,6 +7,7 @@ import { LoadingScreen } from "./components/common/LoadingScreen";
 import { HomeSection } from "./components/sections/Home/HomeSection";
 import { ParcoursSection } from "./components/sections/Parcours/ParcoursSection";
 import { SkillsSection } from "./components/sections/Skills/SkillsSection";
+import { ProjetsSection } from "./components/sections/Projets/ProjetsSection";
 
 // Hooks
 import { useNavigation } from "./hooks/useNavigation";
@@ -54,7 +55,7 @@ function App() {
 
   const themeColor = currentSection === 'home' 
     ? COLORS.primaryDark 
-    : (currentSection === 'parcours' ? activeThemeColor : COLORS.secondary);
+    : (currentSection === 'parcours' ? activeThemeColor : (currentSection === 'projets' ? "#2d1b4e" : COLORS.secondary));
 
   return (
     <main className="relative h-screen w-full text-white overflow-hidden">
@@ -71,46 +72,67 @@ function App() {
       />
       
       <motion.div 
-        initial={{ x: "-33.333%" }}
         animate={{ 
-          x: currentSection === 'parcours' ? "0%" : (currentSection === 'home' ? "-33.333%" : "-66.666%"),
+          y: currentSection === 'projets' ? "-50%" : "0%",
           scale: isTraveling ? 0.95 : 1, 
           filter: isTraveling ? "blur(4px)" : "blur(0px)" 
         }}
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-        className="flex h-full w-[300%]"
+        className="h-[200%] w-full"
       >
-        <ParcoursSection 
-          parcoursContainerRef={parcoursContainerRef}
-          currentIndex={currentIndex}
-          activeThemeColor={activeThemeColor}
-          hoveredButton={hoveredButton}
-          handleSectionChange={handleSectionChange}
-          handleMouseEnter={handleMouseEnter}
-          setHoveredButton={setHoveredButton}
-          setButtonCenter={setButtonCenter}
-          scrollToIndex={scrollToIndex}
-        />
+        {/* Niveau 1: Horizontal (Parcours, Home, Skills) */}
+        <motion.div 
+          animate={{ 
+            x: currentSection === 'parcours' ? "0%" : (currentSection === 'home' || currentSection === 'projets' ? "-33.333%" : "-66.666%"),
+          }}
+          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+          className="flex h-1/2 w-[300%]"
+        >
+          <ParcoursSection 
+            parcoursContainerRef={parcoursContainerRef}
+            currentIndex={currentIndex}
+            activeThemeColor={activeThemeColor}
+            hoveredButton={hoveredButton}
+            handleSectionChange={handleSectionChange}
+            handleMouseEnter={handleMouseEnter}
+            setHoveredButton={setHoveredButton}
+            setButtonCenter={setButtonCenter}
+            scrollToIndex={scrollToIndex}
+          />
 
-        <HomeSection 
-          isTraveling={isTraveling}
-          isLoading={isLoading}
-          hoveredButton={hoveredButton}
-          handleSectionChange={handleSectionChange}
-          handleMouseEnter={handleMouseEnter}
-          setHoveredButton={setHoveredButton}
-          setButtonCenter={setButtonCenter}
-        />
+          <HomeSection 
+            isTraveling={isTraveling}
+            isLoading={isLoading}
+            hoveredButton={hoveredButton}
+            handleSectionChange={handleSectionChange}
+            handleMouseEnter={handleMouseEnter}
+            setHoveredButton={setHoveredButton}
+            setButtonCenter={setButtonCenter}
+          />
 
-        <SkillsSection 
-          isTraveling={isTraveling}
-          isLoading={isLoading}
-          hoveredButton={hoveredButton}
-          handleSectionChange={handleSectionChange}
-          handleMouseEnter={handleMouseEnter}
-          setHoveredButton={setHoveredButton}
-          setButtonCenter={setButtonCenter}
-        />
+          <SkillsSection 
+            isTraveling={isTraveling}
+            isLoading={isLoading}
+            hoveredButton={hoveredButton}
+            handleSectionChange={handleSectionChange}
+            handleMouseEnter={handleMouseEnter}
+            setHoveredButton={setHoveredButton}
+            setButtonCenter={setButtonCenter}
+          />
+        </motion.div>
+
+        {/* Niveau 2: Projets (Verticalement sous la Home) */}
+        <div className="h-1/2 w-full">
+          <ProjetsSection 
+            isTraveling={isTraveling}
+            isLoading={isLoading}
+            hoveredButton={hoveredButton}
+            handleSectionChange={handleSectionChange}
+            handleMouseEnter={handleMouseEnter}
+            setHoveredButton={setHoveredButton}
+            setButtonCenter={setButtonCenter}
+          />
+        </div>
       </motion.div>
     </main>
   );

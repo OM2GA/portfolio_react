@@ -1,21 +1,30 @@
 import { useState } from 'react';
 
-export type SectionType = 'home' | 'parcours' | 'competences';
+export type SectionType = 'home' | 'parcours' | 'competences' | 'projets';
 
 export const useNavigation = (initialSection: SectionType = 'home') => {
   const [currentSection, setCurrentSection] = useState<SectionType>(initialSection);
   const [isTraveling, setIsTraveling] = useState(false);
-  const [travelDirection, setTravelDirection] = useState<'left' | 'right'>('left');
+  const [travelDirection, setTravelDirection] = useState<'left' | 'right' | 'up' | 'down'>('left');
 
   const handleSectionChange = (section: SectionType) => {
-    const sections: SectionType[] = ['parcours', 'home', 'competences'];
-    const currentIndexVal = sections.indexOf(currentSection);
-    const nextIndexVal = sections.indexOf(section);
-    
-    if (nextIndexVal > currentIndexVal) {
-      setTravelDirection('right');
+    if (section === currentSection) return;
+
+    // Déterminer la direction
+    if (section === 'projets') {
+      setTravelDirection('down');
+    } else if (currentSection === 'projets') {
+      setTravelDirection('up');
     } else {
-      setTravelDirection('left');
+      const sections: SectionType[] = ['parcours', 'home', 'competences'];
+      const currentIndexVal = sections.indexOf(currentSection);
+      const nextIndexVal = sections.indexOf(section);
+      
+      if (nextIndexVal > currentIndexVal) {
+        setTravelDirection('right');
+      } else {
+        setTravelDirection('left');
+      }
     }
 
     setIsTraveling(true);

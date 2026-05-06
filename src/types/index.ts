@@ -1,6 +1,6 @@
 import type React from 'react';
 
-export type GravityType = 'left' | 'down' | 'right' | null;
+export type GravityType = 'left' | 'down' | 'right' | 'up' | null;
 
 export interface TimelineStep {
   title: string;

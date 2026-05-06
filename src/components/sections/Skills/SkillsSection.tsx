@@ -11,7 +11,7 @@ interface SkillsSectionProps {
   isTraveling: boolean;
   isLoading: boolean;
   hoveredButton: string | null;
-  handleSectionChange: (section: 'home' | 'parcours' | 'competences') => void;
+  handleSectionChange: (section: 'home' | 'parcours' | 'competences' | 'projets') => void;
   handleMouseEnter: (e: React.MouseEvent<HTMLButtonElement>, label: string) => void;
   setHoveredButton: (label: string | null) => void;
   setButtonCenter: (center: { x: number; y: number } | null) => void;

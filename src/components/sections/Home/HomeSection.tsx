@@ -12,7 +12,7 @@ interface HomeSectionProps {
   isTraveling: boolean;
   isLoading: boolean;
   hoveredButton: string | null;
-  handleSectionChange: (section: 'home' | 'parcours' | 'competences') => void;
+  handleSectionChange: (section: 'home' | 'parcours' | 'competences' | 'projets') => void;
   handleMouseEnter: (e: React.MouseEvent<HTMLButtonElement>, label: string) => void;
   setHoveredButton: (label: string | null) => void;
   setButtonCenter: (center: { x: number; y: number } | null) => void;
@@ -57,6 +57,7 @@ export function HomeSection({
                 onClick={() => {
                   if (label === 'parcours') handleSectionChange('parcours');
                   if (label === 'compétences') handleSectionChange('competences');
+                  if (label === 'projets') handleSectionChange('projets');
                 }}
                 onMouseEnter={(e) => handleMouseEnter(e, label)}
                 onMouseLeave={() => { 
