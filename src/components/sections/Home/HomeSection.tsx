@@ -7,6 +7,7 @@ import { getContactInfo } from "../../../data/portfolioData";
 import { NavButton } from "../../ui/NavButton";
 import { ContactItem } from "../../ui/ContactItem";
 import { HeroHeader } from "./HeroHeader";
+import { CVButton } from "../../ui/CVButton";
 
 interface HomeSectionProps {
   isTraveling: boolean;
@@ -45,11 +46,11 @@ export function HomeSection({
       <div className="max-w-4xl w-full z-10">
         <motion.div 
           animate={{ opacity: (isTraveling || isLoading) ? 0 : 1 }} 
-          className="flex flex-col items-center text-center gap-8"
+          className="flex flex-col items-center text-center gap-6"
         >
           <HeroHeader />
 
-          <div className="flex flex-wrap justify-center gap-8 pt-8">
+          <div className="flex flex-wrap justify-center gap-8 pt-4">
             {["parcours", "projets", "compétences"].map((label) => (
               <NavButton
                 key={label}
@@ -70,7 +71,11 @@ export function HomeSection({
             ))}
           </div>
 
-          <div className="mt-12 flex flex-wrap justify-center gap-x-10 gap-y-4 px-6 py-4 bg-[#d0bcff]/[0.02] backdrop-blur-sm border-y border-[#d0bcff]/10 w-full max-w-3xl">
+          <div className="pt-4">
+            <CVButton />
+          </div>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-4 px-6 py-3 bg-white/[0.01] backdrop-blur-sm border-t border-white/5 w-full max-w-2xl opacity-60 hover:opacity-100 transition-opacity duration-500">
             {contactInfo.map((info) => (
               <ContactItem
                 key={info.label}
