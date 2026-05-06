@@ -29,3 +29,21 @@ export interface ContactInfo {
   type: 'copy' | 'link';
   href?: string;
 }
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  tags: string[];
+  link?: string;
+  github?: string;
+  type: string;
+  details: {
+    problem: React.ReactNode;
+    solution: React.ReactNode;
+    tech?: React.ReactNode;
+    stats?: { label: string; value: string }[];
+    images?: { url: string; caption: string }[];
+  };
+}

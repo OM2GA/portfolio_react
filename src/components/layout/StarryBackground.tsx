@@ -11,7 +11,7 @@ interface Star {
 }
 
 interface StarryBackgroundProps {
-  gravity: 'left' | 'right' | 'down' | null;
+  gravity: 'left' | 'right' | 'down' | 'up' | null;
   center?: { x: number; y: number } | null;
   isTraveling?: boolean;
   travelDirection?: 'left' | 'right' | 'up' | 'down';
