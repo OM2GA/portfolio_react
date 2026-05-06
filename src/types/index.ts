@@ -19,6 +19,7 @@ export interface SkillGroup {
   radius: number;
   duration: number;
   skills: string[];
+  planetColor?: string;
 }
 
 export interface ContactInfo {

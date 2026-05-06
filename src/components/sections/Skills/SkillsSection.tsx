@@ -90,11 +90,17 @@ export function SkillsSection({
 
         <CentralSun isTraveling={isTraveling} isLoading={isLoading} />
 
-        <motion.div 
-          animate={{ rotate: -360 }}
-          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-          className="absolute w-[400px] h-[400px] md:w-[700px] md:h-[700px] border border-purple-500/10 rounded-full"
-        />
+        {/* Orbit Rings */}
+        {skillGroups.map((group) => (
+          <div
+            key={`orbit-${group.id}`}
+            className="absolute border border-white/5 rounded-full pointer-events-none"
+            style={{ 
+              width: group.radius * 2, 
+              height: group.radius * 2,
+            }}
+          />
+        ))}
         
         {skillGroups.map((group, groupIndex) => (
           <SkillAsteroid

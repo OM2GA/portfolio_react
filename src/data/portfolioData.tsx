@@ -58,26 +58,29 @@ export const skillGroups: SkillGroup[] = [
   {
     id: "tech",
     name: "Technique",
-    color: "#61dafb",
-    radius: 260,
-    duration: 60,
-    skills: ["React", "Angular", "Tailwind CSS", "Bootstrap", "JavaScript", "PHP", "HTML/CSS"]
+    color: "#00d8ff", // Cyan électrique
+    radius: 240,
+    duration: 50,
+    skills: ["React", "Angular", "Tailwind CSS", "Bootstrap", "JavaScript", "PHP", "HTML/CSS"],
+    planetColor: "radial-gradient(circle at 30% 30%, #4ae5ff, #00d8ff, #003a45)"
   },
   {
     id: "soft",
     name: "Points Forts",
-    color: "#e91e63",
-    radius: 360,
-    duration: 60,
-    skills: ["Agilité", "Trello", "Créatif", "Polyvalent", "Curieux", "Dynamique", "Esprit d'équipe"]
+    color: "#ff2d55", // Rose vibrant
+    radius: 340,
+    duration: 75,
+    skills: ["Agilité", "Trello", "Créatif", "Polyvalent", "Curieux", "Dynamique", "Esprit d'équipe"],
+    planetColor: "radial-gradient(circle at 30% 30%, #ff6b8b, #ff2d55, #4a0010)"
   },
   {
     id: "lang",
     name: "Langues",
-    color: "#4b8bbe",
-    radius: 420,
-    duration: 60,
-    skills: ["Français (Maternel)", "Anglais (B1)", "Espagnol (A2)"]
+    color: "#7c4dff", // Violet électrique
+    radius: 440,
+    duration: 100,
+    skills: ["Français (Maternel)", "Anglais (B1)", "Espagnol (A2)"],
+    planetColor: "radial-gradient(circle at 30% 30%, #b392ff, #7c4dff, #1e004a)"
   }
 ];
 

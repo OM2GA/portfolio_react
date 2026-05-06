@@ -52,28 +52,34 @@ export function SkillAsteroid({
           <motion.div
             animate={{
               scale: isHoveredOrActive ? 1.2 : 1,
-              borderRadius: [
-                "40% 60% 70% 30% / 50% 40% 60% 50%",
-                "60% 40% 30% 70% / 40% 50% 50% 60%",
-                "40% 60% 70% 30% / 50% 40% 60% 50%",
-              ],
             }}
             transition={{
-              borderRadius: { duration: 5, repeat: Infinity, ease: "easeInOut" },
               scale: { duration: 0.3 },
             }}
             whileHover={{ scale: 1.1 }}
-            className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-slate-700 via-slate-800 to-black border-2 border-slate-600/30 flex items-center justify-center text-center p-2 shadow-[0_0_20px_rgba(0,0,0,0.5)] overflow-hidden"
-            style={{ borderColor: isHoveredOrActive ? group.color : undefined }}
+            className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center text-center p-2 shadow-[inset_-10px_-10px_20px_rgba(0,0,0,0.5),0_0_20px_rgba(0,0,0,0.3)] overflow-hidden relative"
+            style={{ 
+              background: group.planetColor || group.color,
+              border: `1px solid ${group.color}44`,
+              borderRadius: '50%'
+            }}
           >
-            <span className="text-[10px] md:text-xs font-black uppercase tracking-tighter leading-tight drop-shadow-md">
+            <span className="text-[10px] md:text-xs font-black uppercase tracking-tighter leading-tight drop-shadow-lg z-10 text-white">
               {group.name}
             </span>
+            
+            {/* Atmospheric Glow */}
             <motion.div
-              animate={{ opacity: isHoveredOrActive ? 0.6 : 0.2 }}
-              className="absolute inset-0 blur-md"
+              animate={{ 
+                opacity: isHoveredOrActive ? 0.8 : 0.4,
+                scale: isHoveredOrActive ? 1.2 : 1.1
+              }}
+              className="absolute inset-0 rounded-full blur-md -z-10"
               style={{ backgroundColor: group.color }}
             />
+
+            {/* Shine/Highlight */}
+            <div className="absolute top-2 left-4 w-1/3 h-1/4 bg-white/20 rounded-[100%] blur-sm -rotate-45" />
           </motion.div>
 
           <motion.div
@@ -90,7 +96,7 @@ export function SkillAsteroid({
                 : 20,
               pointerEvents: isHoveredOrActive ? "auto" : "none",
             }}
-            className={`absolute flex flex-col gap-2 z-50 min-w-[180px]
+            className={`absolute flex flex-col gap-2 z-[100] min-w-[180px]
               ${listSide.x === "left" ? "right-full mr-4" : "left-full ml-4"}
               ${listSide.y === "bottom" ? "bottom-0" : "top-0"}
             `}
